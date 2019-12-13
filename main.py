@@ -1,1 +1,1 @@
-print('Hello, VLADIcK!')
+print('Hello, VLADgit !')
