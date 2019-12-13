@@ -15,7 +15,7 @@ if __name__ == "__main__":
 	logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 	# Initialised
-	updater = Updater(token='850462457:AAHRS7lOavs3VgD7_PR-QqcXXSkhnYT8Kho', use_context=True)
+	updater = Updater(token='', use_context=True)
 	dispatcher = updater.dispatcher
 
 	start_handler = CommandHandler('start', start)
