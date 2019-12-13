@@ -1,4 +1,5 @@
 from telegram.ext import Updater, CommandHandler
+from init import BotInitialize
 import logging
 
 
@@ -14,9 +15,8 @@ def helps(update, context):
 if __name__ == "__main__":
 	logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-	# Initialised
-	updater = Updater(token='850462457:AAHRS7lOavs3VgD7_PR-QqcXXSkhnYT8Kho', use_context=True)
-	dispatcher = updater.dispatcher
+	# Initialized
+	updater, dispatcher = BotInitialize()
 
 	start_handler = CommandHandler('start', start)
 	dispatcher.add_handler(start_handler)
@@ -25,3 +25,5 @@ if __name__ == "__main__":
 	dispatcher.add_handler(help_handler)
 
 	updater.start_polling()
+
+	
