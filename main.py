@@ -2,14 +2,18 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from init import BotInitialize
 import logging
 from time import sleep
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup
 
 
 def start_command(update, context):
 	sticker = "CAADAgAD_iAAAulVBRgi4A0qOPfBBRYE"
+	text = f"*Добрый день, {update.effective_chat.first_name}!*"
+	button1 = KeyboardButton(text="Проверить место")
+	button2 = KeyboardButton(text="Отправить местоположение", request_location = True)
+	button3 = KeyboardButton(text="Советы при пожаре")	
+	reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]])
 	context.bot.sendSticker(chat_id=update.effective_chat.id, sticker=sticker)
-	text = "Добрый день!"
-	context.bot.sendMessage(chat_id=update.effective_chat.id, text=text)
+	context.bot.sendMessage(chat_id=update.effective_chat.id, text=text, reply_markup=reply_markup)
 
 
 def help_command(update, context):
@@ -21,16 +25,16 @@ def help_command(update, context):
 
 def unknown(update, context):
 	text = "*Я вас не понимаю!(*"
-	context.bot.sendMessage(chat_id=update.effective_chat.id, text=text)
+	context.bot.sendMessage(chat_id=update.effective_chat.id, text=text, parse_mode='markdown')
 
-def test_vlad(update, context):
-	#sending location test
-	location = KeyboardButton(text='Iam here', request_location = True)
-	reply_markup = ReplyKeyboardMarkup([[location]])
-	context.bot.send_message(chat_id=update.effective_chat.id, text="Where are you", reply_markup=reply_markup)
-	
 
-def test_alex(update, context):
+def check_location(update, context):
+	lon = update.effective_message.location.longitude
+	lat = update.effective_message.location.latitude
+	context.bot.sendMessage(chat_id=update.effective_chat.id, text=str(lon)+' '+str(lat))
+
+
+def test(update, context):
 	# Inline Keyboard test#1
 	button1 = InlineKeyboardButton('кнопка1', callback_data='1')
 	button2 = InlineKeyboardButton('кнопка2', callback_data='2')
@@ -42,7 +46,6 @@ def test_alex(update, context):
 	# Check message
 	text2 = "ЧТО ЭТО ТАКОЕ? *<"+update.message.text.upper()+'>*'
 	context.bot.sendMessage(chat_id=update.effective_chat.id, text=text2, parse_mode='markdown')
-
 
 
 
@@ -58,13 +61,15 @@ if __name__ == "__main__":
 	help_handler = CommandHandler('help', help_command)
 	dispatcher.add_handler(help_handler)
 
-	test_vlad = CommandHandler('test', test_vlad)
-	dispatcher.add_handler(vlad_alex)
-	
+	test = CommandHandler('test', test)
+	dispatcher.add_handler(test)
 
-	unknown_handler = MessageHandler(Filters.all, unknown)
+	unknown_handler = MessageHandler(Filters.text, unknown)
 	dispatcher.add_handler(unknown_handler)
 
+	# location handler
+	location_handler = MessageHandler(Filters.location, check_location)
+	dispatcher.add_handler(location_handler)
 
 	updater.start_polling()
 	
