@@ -55,19 +55,23 @@ if __name__ == "__main__":
 	# Initialized
 	updater, dispatcher = BotInitialize()
 
+	# Start command handler
 	start_handler = CommandHandler('start', start_command)
 	dispatcher.add_handler(start_handler)
 
+	# Help command handler
 	help_handler = CommandHandler('help', help_command)
 	dispatcher.add_handler(help_handler)
 
+	# Test commant handler
 	test = CommandHandler('test', test)
 	dispatcher.add_handler(test)
 
+	# Message Handler. Now for test
 	unknown_handler = MessageHandler(Filters.text, unknown)
 	dispatcher.add_handler(unknown_handler)
 
-	# location handler
+	# Location handler
 	location_handler = MessageHandler(Filters.location, check_location)
 	dispatcher.add_handler(location_handler)
 
