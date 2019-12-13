@@ -13,7 +13,7 @@ def start_command(update, context):
 	button3 = KeyboardButton(text="Советы при пожаре")	
 	reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]])
 	context.bot.sendSticker(chat_id=update.effective_chat.id, sticker=sticker)
-	context.bot.sendMessage(chat_id=update.effective_chat.id, text=text, reply_markup=reply_markup)
+	context.bot.sendMessage(chat_id=update.effective_chat.id, text=text, reply_markup=reply_markup, parse_mode='markdown')
 
 
 def help_command(update, context):
