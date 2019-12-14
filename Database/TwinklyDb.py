@@ -5,10 +5,10 @@ from psycopg2.sql import SQL
 from psycopg2 import sql 
 
 
-dbname = 'Twinkly'
-user = 'twinklyadmin'
-password = 'tfEJQjqS8wYvH23xEcGH'
-host = 'twinkly-dev.cc4xdtflaafw.us-west-2.rds.amazonaws.com'
+dbname = ''
+user = ''
+password = ''
+host = ''
 
 def run_query(stmt):
     with closing(psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=5433)) as conn:
