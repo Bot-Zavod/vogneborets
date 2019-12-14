@@ -3,20 +3,12 @@ from init import BotInitialize
 import logging
 from time import sleep
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
-import re
 
 # LOGSLOGSLOGS
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT, CONFIRM, CHECK  = range(7)
-
-#Клавиатура ДА/НЕТ
-def YupNo_keyboard():
-	button1 = InlineKeyboardButton('Да ✅', callback_data='yes')
-	button2 = InlineKeyboardButton('Нет ❌', callback_data='no')
-	keyboard = InlineKeyboardMarkup([[button1, button2]])
-	return keyboard
 
 # Стартовое сообщение
 def start_command(update, context):
@@ -62,59 +54,80 @@ def confirm_place(update, context):
 	mess = context.bot.send_message(chat_id=update.effective_chat.id, text='`processing...`', reply_markup=ReplyKeyboardRemove(), parse_mode='markdown')
 	context.bot.delete_message(chat_id=mess.chat.id, message_id=mess.message_id)
 
+	# Чтоб правильнее отслеживать ответы, придется везде прописывать 
+	# клаву с разными callback_data
+	button1 = InlineKeyboardButton('Да ✅', callback_data='yes1')
+	button2 = InlineKeyboardButton('Нет ❌', callback_data='no1')
+	keyboard = InlineKeyboardMarkup([[button1, button2]])
+
 	text = '*Вы находитесь тут - *'+ update.message.text+' ?'
-	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=keyboard)
 	return QUEST_1
 
 # ВОПРОСЫ
-def q1(update, context):
-	query = update.callback_query
-	if query.data == 'yes':
-		text = "*Вопрос №1*"
-		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
-		return QUEST_2
 
-	# Если пользователь не увидел подходящего места и жмет НЕТ
-	# То диалог оценки заканчивается и пользователь 'переводится' на /start
-	elif query.data == 'no':
+def q1(update, context):
+	query = update.callback_query	
+	button1 = InlineKeyboardButton('Да ✅', callback_data='yes2')
+	button2 = InlineKeyboardButton('Нет ❌', callback_data='no2')
+	keyboard = InlineKeyboardMarkup([[button1, button2]])
+
+	if query.data == 'yes1':
+		text = "*Вопрос №1*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=keyboard)
+		return QUEST_2
+	elif query.data == 'no1':
 		text = "*Попробуй еще раз!*"
 		query.edit_message_text(text=text, parse_mode='markdown')
-		start_command(update, context)
-		return ConversationHandler.END
+		start_command(update, context) # redirect to /start
+		return ConversationHandler.END # end of conversation
 
 def q2(update, context):
 	query = update.callback_query
+	button1 = InlineKeyboardButton('Да ✅', callback_data='yes3')
+	button2 = InlineKeyboardButton('Нет ❌', callback_data='no3')
+	keyboard = InlineKeyboardMarkup([[button1, button2]])
+
+	# запись в бд будет
 	if query.data == 'yes':
-		text = "*Вопрос №2*"
-		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
-		return QUEST_3
-	else:
-		text = "*Вопрос №2*"
-		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
-		return QUEST_3
+		pass
+	elif query.data == 'no':
+		pass
+
+	text = "*Вопрос №2*"
+	query.edit_message_text(text=text, parse_mode='markdown', reply_markup=keyboard)
+	return QUEST_3
 
 def q3(update, context):
 	query = update.callback_query
+	button1 = InlineKeyboardButton('Да ✅', callback_data='yes4')
+	button2 = InlineKeyboardButton('Нет ❌', callback_data='no4')
+	keyboard = InlineKeyboardMarkup([[button1, button2]])
+
 	if query.data == 'yes':
-		text = "*Вопрос №3*"
-		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
-		return QUEST_4
-	else:
-		text = "*Вопрос №3*"
-		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
-		return QUEST_4
+		pass
+	elif query.data == 'no':
+		pass
+
+	text = "*Вопрос №3*"
+	query.edit_message_text(text=text, parse_mode='markdown', reply_markup=keyboard)
+	return QUEST_4
 
 def q4(update, context):
 	query = update.callback_query
-	# Проверяем ответы на вопросы
+	button1 = InlineKeyboardButton('Да ✅', callback_data='yes5')
+	button2 = InlineKeyboardButton('Нет ❌', callback_data='no5')
+	keyboard = InlineKeyboardMarkup([[button1, button2]])
+
 	if query.data == 'yes':
-		text = "*Вопрос №4*"
-		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
-		return COMMENT
-	else:
-		text = "*Вопрос №4*"
-		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
-		return COMMENT
+		pass
+	elif query.data == 'no':
+		pass
+	
+	text = "*Вопрос №4*"
+	query.edit_message_text(text=text, parse_mode='markdown', reply_markup=keyboard)
+	return COMMENT
+
 
 # Обработка комментария после всех вопросов
 def comment(update, context):
@@ -151,7 +164,7 @@ def main():
 
 	# Создаем Ветку диалога по оценке заведения. Во время диалога работает /start, а лучше бы не работал
 	# создает только лишние проблемы. Так как вызывает баги
-	CHECK_handler = ConversationHandler(
+	checkPlace_handler = ConversationHandler(
 		entry_points=[MessageHandler(Filters.regex('Оценить заведение'), check_place)],
 
 		states={
@@ -172,7 +185,7 @@ def main():
 		fallbacks=[CommandHandler('cancel', cancel)]
 	)
 
-	dispatcher.add_handler(CHECK_handler)
+	dispatcher.add_handler(checkPlace_handler)
 
 	updater.start_polling()	
 
