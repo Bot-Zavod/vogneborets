@@ -89,9 +89,9 @@ def q2(update, context):
 	keyboard = InlineKeyboardMarkup([[button1, button2]])
 
 	# запись в бд будет
-	if query.data == 'yes':
+	if query.data == 'yes2':
 		pass
-	elif query.data == 'no':
+	elif query.data == 'no2':
 		pass
 
 	text = "*Вопрос №2*"
@@ -104,9 +104,9 @@ def q3(update, context):
 	button2 = InlineKeyboardButton('Нет ❌', callback_data='no4')
 	keyboard = InlineKeyboardMarkup([[button1, button2]])
 
-	if query.data == 'yes':
+	if query.data == 'yes3':
 		pass
-	elif query.data == 'no':
+	elif query.data == 'no3':
 		pass
 
 	text = "*Вопрос №3*"
@@ -119,9 +119,9 @@ def q4(update, context):
 	button2 = InlineKeyboardButton('Нет ❌', callback_data='no5')
 	keyboard = InlineKeyboardMarkup([[button1, button2]])
 
-	if query.data == 'yes':
+	if query.data == 'yes4':
 		pass
-	elif query.data == 'no':
+	elif query.data == 'no4':
 		pass
 	
 	text = "*Вопрос №4*"
@@ -132,6 +132,12 @@ def q4(update, context):
 # Обработка комментария после всех вопросов
 def comment(update, context):
 	query = update.callback_query
+
+	if query.data == 'yes4':
+		pass
+	elif query.data == 'no4':
+		pass
+
 	text = "*Оставь комментарий*"
 	query.edit_message_text(text=text, parse_mode='markdown')
 	return CHECK #переключаемся на чек
@@ -164,7 +170,7 @@ def main():
 
 	# Создаем Ветку диалога по оценке заведения. Во время диалога работает /start, а лучше бы не работал
 	# создает только лишние проблемы. Так как вызывает баги
-	checkPlace_handler = ConversationHandler(
+	addEstPlace_handler = ConversationHandler(
 		entry_points=[MessageHandler(Filters.regex('Оценить заведение'), check_place)],
 
 		states={
@@ -184,9 +190,23 @@ def main():
 		# команда которая заканчивает диалог когда угодно /cancel
 		fallbacks=[CommandHandler('cancel', cancel)]
 	)
+	dispatcher.add_handler(addEstPlace_handler)
 
-	dispatcher.add_handler(checkPlace_handler)
 
+	# Диалог просмотра оценки помещения. 
+	# Запрашивает как предыдущий хэндлер местоположение
+	# Возвращает результаты как в check_result
+	getPlaceInfo_handler = ConversationHandler(
+		entry_points=[MessageHandler(Filters.regex('Проверить'), check_place)],
+
+		states={
+			CONFIRM: [MessageHandler(Filters.text, confirm_place)],
+			CHECK: [MessageHandler(Filters.text, check_result)]
+		},
+		# команда которая заканчивает диалог когда угодно /cancel
+		fallbacks=[CommandHandler('cancel', cancel)]
+	)
+	dispatcher.add_handler(getPlaceInfo_handler)
 	updater.start_polling()	
 
 
