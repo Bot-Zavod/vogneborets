@@ -14,7 +14,7 @@ def CoordinatesToAdress(coordinates):
     data = urllib.request.urlopen(link).read()
     output = json.loads(data)
     adress = output['results'][0]['formatted_address']
-    print(output['results'][0]['formatted_address'],"\n")
+    # print(output['results'][0]['formatted_address'],"\n")
     return adress
 # test whole json
 # print(json.dumps(output, indent=4, sort_keys=True))
