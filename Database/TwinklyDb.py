@@ -69,4 +69,5 @@ class User:
 
 # User.addNewUser(100500, 'Testname', 'TestLastName','chat','unmae')
 # print(Object.getObjects())
-print(Object.getPlaceStatus('ONPU'))
+# print(Object.getPlaceStatus('ONPU'))
+# print(Object.getObjects())
