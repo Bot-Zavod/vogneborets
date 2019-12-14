@@ -1,4 +1,4 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from init import BotInitialize
 import logging
 from time import sleep
@@ -9,85 +9,132 @@ import re
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT = range(5)
+QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT, CONFIRM, CHECK  = range(7)
 
+#Клавиатура ДА/НЕТ
+def YupNo_keyboard():
+	button1 = InlineKeyboardButton('Да ✅', callback_data='yes')
+	button2 = InlineKeyboardButton('Нет ❌', callback_data='no')
+	keyboard = InlineKeyboardMarkup([[button1, button2]])
+	return keyboard
+
+# Стартовое сообщение
 def start_command(update, context):
 	sticker = "CAADAgAD_iAAAulVBRgi4A0qOPfBBRYE"
-	text = f"*Добрый день, {update.effective_chat.first_name}!*"
+	# Так как несовпадение выбраного места возвращает нас инлайном сюда,
+	# то update для инлайна немного другой.
+	if update.callback_query:
+		update = update.callback_query
+		first_name = update.message.chat.first_name
+	else:
+		first_name = update.effective_chat.first_name
+
+	text = f"*Добрый день, {first_name}!*"
 	reply_markup = ReplyKeyboardMarkup([['Оценить заведение'],['Проверить'],['Советы при ЧС']], resize_keyboard=True)
 	update.message.reply_sticker(sticker=sticker)
 	update.message.reply_text(text=text, reply_markup=reply_markup, parse_mode='markdown')
 
-
+# Сообщение на команду помощи
 def help_command(update, context):
 	sticker = "CAADAgADCSEAAulVBRjFPBc0MGnDUhYE"
 	update.message.reply_sticker(sticker=sticker)
 	text = "*Чем могу помочь?*"
 	update.message.reply_text(text=text, parse_mode='markdown')
 
-
+# Обработка сообщение с геолокацией
 def check_location(update, context):
 	lon = update.effective_message.location.longitude
 	lat = update.effective_message.location.latitude
-	update.message.reply_text(text=str(lon)+' '+str(lat), parse_mode='markdown')
+	update.message.reply_text(text=str(lat)+' '+str(lon), parse_mode='markdown')
 
-
-def test(update, context):
-	# Inline Keyboard test#1
-	button1 = InlineKeyboardButton('кнопка1', callback_data='1')
-	button2 = InlineKeyboardButton('кнопка2', callback_data='2')
-	button3 = InlineKeyboardButton('кнопка3', callback_data='3')
-	button4 = InlineKeyboardButton('кнопка4', callback_data='4')
-	keyboard = InlineKeyboardMarkup([[button1, button2],[button3, button4]])
-	update.message.reply_text(text='InlineKeyboard test#1', reply_markup=keyboard)
-
-	# Check message
-	text2 = "ЧТО ЭТО ТАКОЕ? *<"+update.message.text.upper()+'>*'
-	update.message.reply_text(text=text2, parse_mode='markdown')
-
-	print(type(update.effective_chat.id))
-
-
-
-
+# Начало разговора, при оценивании объекта
+# Отправляет клавиатуру, которая поможет отправить геолокацию
 def check_place(update, context):
 	button = KeyboardButton(text="Отправить местоположение", request_location = True)
 	reply_markup = ReplyKeyboardMarkup([[button]], resize_keyboard=True)
 	text = "*Хорошо, давай оценим место, где ты сейчас находишься.*\nОтправь мне свое метоположение или напиши название заведения!\n/cancel - чтоб остановить"
 	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=reply_markup)
+	return CONFIRM
+
+# Подтверждаем место для оценивания
+def confirm_place(update, context):
+	# отсюда вытащим id сообщения для удаления, надо это только для того, чтоб скрыть ненужную клавиатуру
+	mess = context.bot.send_message(chat_id=update.effective_chat.id, text='`processing...`', reply_markup=ReplyKeyboardRemove(), parse_mode='markdown')
+	context.bot.delete_message(chat_id=mess.chat.id, message_id=mess.message_id)
+
+	text = '*Вы находитесь тут - *'+ update.message.text+' ?'
+	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
 	return QUEST_1
 
+# ВОПРОСЫ
 def q1(update, context):
-	text = "*Вопрос №1*"
-	update.message.reply_text(text=text, parse_mode='markdown')
-	return QUEST_2
+	query = update.callback_query
+	if query.data == 'yes':
+		text = "*Вопрос №1*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+		return QUEST_2
+
+	# Если пользователь не увидел подходящего места и жмет НЕТ
+	# То диалог оценки заканчивается и пользователь 'переводится' на /start
+	elif query.data == 'no':
+		text = "*Попробуй еще раз!*"
+		query.edit_message_text(text=text, parse_mode='markdown')
+		start_command(update, context)
+		return ConversationHandler.END
 
 def q2(update, context):
-	text = "*Вопрос №2*"
-	update.message.reply_text(text=text, parse_mode='markdown')
-	return QUEST_3
+	query = update.callback_query
+	if query.data == 'yes':
+		text = "*Вопрос №2*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+		return QUEST_3
+	else:
+		text = "*Вопрос №2*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+		return QUEST_3
 
 def q3(update, context):
-	text = "*Вопрос №3*"
-	update.message.reply_text(text=text, parse_mode='markdown')
-	return QUEST_4
+	query = update.callback_query
+	if query.data == 'yes':
+		text = "*Вопрос №3*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+		return QUEST_4
+	else:
+		text = "*Вопрос №3*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+		return QUEST_4
 
 def q4(update, context):
-	text = "*Вопрос №4*"
-	update.message.reply_text(text=text, parse_mode='markdown')
-	return COMMENT
+	query = update.callback_query
+	# Проверяем ответы на вопросы
+	if query.data == 'yes':
+		text = "*Вопрос №4*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+		return COMMENT
+	else:
+		text = "*Вопрос №4*"
+		query.edit_message_text(text=text, parse_mode='markdown', reply_markup=YupNo_keyboard())
+		return COMMENT
 
+# Обработка комментария после всех вопросов
 def comment(update, context):
+	query = update.callback_query
 	text = "*Оставь комментарий*"
-	update.message.reply_text(text=text, parse_mode='markdown')
-	start_command(update, context)
-	return ConversationHandler.END
+	query.edit_message_text(text=text, parse_mode='markdown')
+	return CHECK #переключаемся на чек
 
+#Итог при оценке.
+def check_result(update, context):
+	text = "*Многие думают так-же!* /start"
+	update.message.reply_text(text=text, parse_mode='markdown')
+	return ConversationHandler.END #завершение диалога
+
+# команда отмены COnversationHandler
 def cancel(update, context):
     user = update.message.from_user
     update.message.reply_text('*Ладно. Закончим с этим)*', parse_mode='markdown')
     start_command(update, context)
-    return ConversationHandler.END
+    return ConversationHandler.END #завершение диалога
 
 def main():
 	# Initialized BOT
@@ -99,23 +146,29 @@ def main():
 	# Help command handler
 	dispatcher.add_handler(CommandHandler('help', help_command))
 
-	# Test commant handler
-	dispatcher.add_handler(CommandHandler('test', test))
-
 	# Location handler
 	dispatcher.add_handler(MessageHandler(Filters.location, check_location))
 
-	# Check Object Handler ----
+	# Создаем Ветку диалога по оценке заведения. Во время диалога работает /start, а лучше бы не работал
+	# создает только лишние проблемы. Так как вызывает баги
 	CHECK_handler = ConversationHandler(
-		entry_points=[CommandHandler('check', check_place), MessageHandler(Filters.regex('Оценить заведение'), check_place)],
+		entry_points=[MessageHandler(Filters.regex('Оценить заведение'), check_place)],
 
 		states={
-			QUEST_1: [MessageHandler(Filters.text, q1)],
-			QUEST_2: [MessageHandler(Filters.text, q2)],
-			QUEST_3: [MessageHandler(Filters.text, q3)],
-			QUEST_4: [MessageHandler(Filters.text, q4)],
-			COMMENT: [MessageHandler(Filters.text, comment)],
+			# Путь развития диалога, Сначала адресс(выше на 2 строки), потом
+			# Проверка адреса, если не то, то закрыает. Если все норм, то 
+			# начинает задавтаь вопросы, а там и комментарий в конце. В итоге
+			# CHECK в конце будет записывать комментарий и показывать оценку места для других и 
+			# другие похожие комментарии пользователя
+			CONFIRM: [MessageHandler(Filters.text, confirm_place)],
+			QUEST_1: [CallbackQueryHandler(q1)],
+			QUEST_2: [CallbackQueryHandler(q2)],
+			QUEST_3: [CallbackQueryHandler(q3)],
+			QUEST_4: [CallbackQueryHandler(q4)],
+			COMMENT: [CallbackQueryHandler(comment)],
+			CHECK: [MessageHandler(Filters.text, check_result)]
 		},
+		# команда которая заканчивает диалог когда угодно /cancel
 		fallbacks=[CommandHandler('cancel', cancel)]
 	)
 
