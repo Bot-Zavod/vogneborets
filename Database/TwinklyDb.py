@@ -33,6 +33,8 @@ class User:
     def __repr__(self):
         return f'User: {self.username}, id: {self.user_id}, chat_id: {self.chat_id}'
 
+    #Add new user to database
+
     @classmethod
     def addNewUser(cls, chat_id, first_name, last_name, username):
         stmt = SQL('INSERT INTO "Users" ({}) VALUES ({})').format(
@@ -41,6 +43,9 @@ class User:
         )
         run_query_nofetch(stmt)
 
+
+    #Get user by chat ID, return User object list
+
     @classmethod
     def getUser(cls, chat_id):
         stmt = SQL('SELECT * FROM "Users" WHERE chat_id = {}').format(
@@ -48,11 +53,16 @@ class User:
         )
         return [User(*el[1:], user_id = el[0]) for el in run_query(stmt)]
 
+    # Checks location of a user, returns True/False
+
     def checkLocation(self):
         stmt = SQL('SELECT EXTRACT(EPOCH FROM (current_timestamp - loc_timestamp)/60) FROM "User_locations" WHERE user_id = {}').format(
             SQL(',').join(map(sql.Literal, [self.chat_id])),
         )
-        return run_query(stmt)[0][0] < 15.0
+        response = run_query(stmt)
+        return False if len(response) == 0 else response[0][0] < 15.0
+
+    # Updates location of a user
 
     def updateLocation(self, lat, lon):
         stmt = SQL('''INSERT INTO "User_locations" (user_id, lat, lon, loc_timestamp) VALUES ({}, current_timestamp)
@@ -92,17 +102,28 @@ class Form:
 class Question:
     column_names = ['content']
 
-    def __init__(self, content, id = None):
+    def __init__(self, content, lang,  id = None):
         self.content = content
+        self.lang = lang
         self.id = id
 
     def __repr__(self):
         return f'Question: {self.content}, id: {self.id}'
 
     @classmethod
-    def getQuestion(cls, id):
-        stmt = SQL('SELECT * FROM "Questions" WHERE id = {}').format(
+    def getQuestion(cls, id, lang):
+        stmt = SQL('SELECT * FROM "Questions" WHERE id = {} AND lang = {}').format(
             SQL(',').join(map(sql.Literal, [id])),
+            SQL(',').join(map(sql.Literal, [lang])),
+        )
+        return [Question(*el[1:], id = el[0]) for el in run_query(stmt)]
+
+    @classmethod
+    def getQuestions(cls, id, lang):
+        id = tuple(id)
+        stmt = SQL('SELECT * FROM "Questions" WHERE id in {} AND lang = {}').format(
+            SQL(',').join(map(sql.Literal, [id])),
+            SQL(',').join(map(sql.Literal, [lang])),
         )
         return [Question(*el[1:], id = el[0]) for el in run_query(stmt)]
     
@@ -149,17 +170,24 @@ class Review:
         run_query_nofetch(stmt)
     
 
+#EXAMPLES
+
 # User.addNewUser(100500, 'Testname', 'TestLastName','chat','unmae')
-# print(User.getUser(100500)[0].checkLocation())
-print(User.getUser(100500)[0].updateLocation(100, 500))
-# print(Object.getObjects())
-# print(Object.getPlaceStatus('ONPU'))
-# print(Object.getObjects())
+# print(User.getUser(123123)[0].checkLocation())
+# print(User.getUser(100500)[0].updateLocation(100, 500))
 # print(User.getUser(100500))
 # print(Form.getForm(1))
 # print(Form.addForm('TestYForm', [1,2]))
-# print(Question.getQuestion(1))
+# print(Question.getQuestion(1, 'RU'))
+# print(Question.getQuestion(1, 'UA'))
 # print(Question.addQuestion('Hellot there?'))
 # print(Review.getReview(1))
 # print (type(Review.getReview(1)[0].q_json))
 # Review.addReview(100500, json.dumps({'1':0}), 1,1,1,'Tereshkovoy10', 'ONPU', 'cmnt', 10)
+
+# Form example
+# print(Question.getQuestions([1,2,3], 'UA'))
+# form = Form.getForm(1)[0]
+# questions = Question.getQuestions(form.questions, 'UA')
+# for q in questions:
+#     print (q)
