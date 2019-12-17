@@ -1,9 +1,9 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
-from init import BotInitialize
-import logging
-from time import sleep
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from GeoReverse import CoordinatesToAdress
+from init import BotInitialize
+from time import sleep
+import logging
 
 # LOGSLOGSLOGS
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -179,7 +179,8 @@ def finish_est(update, context):
 
 # End commant of ConversationHandler
 def cancel(update, context):
-    update.message.reply_text(text='Пока!',  reply_markup=ReplyKeyboardRemove())
+	logger.info("User %s: end estimate '%s' by /cansel command ", update.message.chat.id, USER_PLACE)
+    update.message.reply_text(text='Ты можешь попытаться еще раз!',  reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
 
 
@@ -214,5 +215,6 @@ if __name__ == "__main__":
 		))
 
 
+	# For more comfortable start and stop from console
 	updater.start_polling()	
 	updater.idle()
