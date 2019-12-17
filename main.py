@@ -12,8 +12,12 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # iMITATE USER_db
-QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT, FINISH = range(6)
+# QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT, FINISH = range(6)
 
+QUESTIONS = ['Ты пацан?', 'Завтра утром ты будешь кушать кашу?', 'У тебя собака есть?', 'Ты умный парень?']
+ANSWERS = []
+
+# Active users list. Users.allUsers() - to show all Users
 Users = Users()
 
 # start message
@@ -108,105 +112,28 @@ def place_estimation(update, context):
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
 		logger.info("User %s: started estimate '%s' place ", chat_id, Users.getUser(chat_id)['USER_PLACE'])
 		update.message.reply_text(text=f"*Давай оценим: { Users.getUser(chat_id)['USER_PLACE'] }*\n\n Ответь на вопросы ниже!", parse_mode='markdown')
-		return QUEST_1
+
+		# sending a question
+		for question_text, i in enumerate(QUESTIONS):
+			questions(update, context, question_text)
+			dispatcher.add_handler(CallbackQueryHandler(answer))
 
 
-
-
-# QUESTIONS
-
-def q1(update, context):
-	button1 = InlineKeyboardButton('Да ✅', callback_data='yes2')
-	button2 = InlineKeyboardButton('Нет ❌', callback_data='no2')
-	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='wtf2')
+def questions(update, context, question_text):
+	button1 = InlineKeyboardButton('Да ✅', callback_data='yes')
+	button2 = InlineKeyboardButton('Нет ❌', callback_data='no')
+	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='i dont know')
 	keyboard = InlineKeyboardMarkup([[button1, button2],[button3]])
-	text = "*Вопрос №1*"
-	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=keyboard)
-	return QUEST_2
+	update.message.reply_text(text=question_text, parse_mode='markdown', reply_markup=keyboard)
+	dispatcher.add_handler(CallbackQueryHandler(answer))
 
 
-
-
-
-def q2(update, context):
+def answer(update, context):
 	query = update.callback_query
-	button1 = InlineKeyboardButton('Да ✅', callback_data='yes3')
-	button2 = InlineKeyboardButton('Нет ❌', callback_data='no3')
-	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='wtf3')
-	keyboard = InlineKeyboardMarkup([[button1, button2],[button3]])
-	# запись в бд будет
-	if query.data == 'yes2':
-		pass
-	elif query.data == 'no2':
-		pass
-
-	text = "*Вопрос №2*"
-	query.edit_message_text(text=text, parse_mode='markdown', reply_markup=keyboard)
-	return QUEST_3
-
-def q3(update, context):
-	query = update.callback_query
-	button1 = InlineKeyboardButton('Да ✅', callback_data='yes4')
-	button2 = InlineKeyboardButton('Нет ❌', callback_data='no4')
-	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='wtf4')
-	keyboard = InlineKeyboardMarkup([[button1, button2],[button3]])
-
-	if query.data == 'yes3':
-		pass
-	elif query.data == 'no3':
-		pass
-
-	text = "*Вопрос №3*"
-	query.edit_message_text(text=text, parse_mode='markdown', reply_markup=keyboard)
-	return QUEST_4
-
-def q4(update, context):
-	query = update.callback_query
-	button1 = InlineKeyboardButton('Да ✅', callback_data='yes5')
-	button2 = InlineKeyboardButton('Нет ❌', callback_data='no5')
-	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='wtf5')
-	keyboard = InlineKeyboardMarkup([[button1, button2],[button3]])
-
-	if query.data == 'yes4':
-		pass
-	elif query.data == 'no4':
-		pass
-	
-	text = "*Вопрос №4*"
-	query.edit_message_text(text=text, parse_mode='markdown', reply_markup=keyboard)
-	return COMMENT
-
-# Comment by user
-def comment(update, context):
-	query = update.callback_query
-	if query.data == 'yes4':
-		pass
-	elif query.data == 'no4':
-		pass
-	text = "*Оставь комментарий*"
-	query.edit_message_text(text=text, parse_mode='markdown')
-	return FINISH
-
-# Write the Users comment and end the ConversationHandler
-def finish_est(update, context):
-	text = "*Вот похожие отзывы: *"
-	update.message.reply_text(text=text, parse_mode='markdown')
-	return ConversationHandler.END
+	context.bot.delete_message(query.message.chat.id, query.message.message_id)
+	print('message_id',query.message.message_id,':',query.message.text,' - ',query.data)
 
 
-
-
-
-
-
-
-
-# End commant of ConversationHandler
-def cancel(update, context):
-	chat_id = update.message.chat.id
-	logger.info("User %s: end estimate '%s' by /cansel command ", chat_id, Users.getUser(chat_id)['USER_PLACE'])
-	update.message.reply_text(text='Ты можешь попытаться еще раз!',  reply_markup=ReplyKeyboardRemove())
-	return ConversationHandler.END
 
 
 if __name__ == "__main__":
@@ -228,23 +155,7 @@ if __name__ == "__main__":
 	# # True mode--- place info
 	dispatcher.add_handler(MessageHandler(Filters.regex('^Проверить$'), place_find_output))
 
-	# ConversationHandler for ESTIMATE place by User
-	dispatcher.add_handler(ConversationHandler(
-			entry_points=[MessageHandler(Filters.regex('^Оценить заведение$'), place_estimation)],
-			states={
-				QUEST_1: [CallbackQueryHandler(q1)],
-				QUEST_2: [CallbackQueryHandler(q2)],
-				QUEST_3: [CallbackQueryHandler(q3)],
-				QUEST_4: [CallbackQueryHandler(q4)],
-				COMMENT: [CallbackQueryHandler(comment)],
-				FINISH: [MessageHandler(Filters.text, finish_est)]
-			},
-			fallbacks=[CommandHandler('cancel', cancel)]
-		))
-
-	# Sort all messanges and check User in botUsers
-	# dispatcher.add_handler(MessageHandler(Filters.all, sorter))
-
+	dispatcher.add_handler(MessageHandler(Filters.regex('^Оценить заведение$'), place_estimation))
 
 	# For more comfortable start and stop from console
 	updater.start_polling()	
