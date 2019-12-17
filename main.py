@@ -1,6 +1,5 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from init import BotInitialize
-from Handlers import *
 import logging
 from time import sleep
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
@@ -16,6 +15,9 @@ PLACES_VARIANT = []
 USER_PLACE = ''
 QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT, FINISH = range(6)
 
+
+
+
 # start message
 def start_command(update, context):	
 	first_name = update.message.chat.first_name	
@@ -30,12 +32,13 @@ def start_command(update, context):
 		location_button = KeyboardButton(text="Отправить местоположение", request_location = True)
 		reply_markup = ReplyKeyboardMarkup([[location_button],['Советы при ЧС']], resize_keyboard=True)
 	
+	logger.info("User %s: send /start command", update.message.chat.id)
 	update.message.reply_sticker(sticker=sticker)
 	update.message.reply_text(text=text, reply_markup=reply_markup, parse_mode='markdown')
 
 # Instructions during emergency situations 
 def Instructions(update, context):
-	print(USER_PLACE, IS_USER_ACTIVE)
+	logger.info("User %s: ask instructions", update.message.chat.id)
 	update.message.reply_text(text='*Инструкции при пожаре и других ЧС!*', parse_mode='markdown')
 
 # Location message
@@ -56,12 +59,14 @@ def check_location(update, context):
 
 	# Submit the correct location
 	reg = '^'+'|'.join(PLACES_VARIANT)+'$'
+	logger.info("User %s: send location %s", update.message.chat.id, str(lat)+','+str(lon))
 	dispatcher.add_handler(MessageHandler(Filters.regex(reg), submit_location))
 
 
 # Submit location and turn True mode on User
 def submit_location(update, context):
 	msg = update.effective_message.text
+	# check user mode and correct it
 	global USER_PLACE
 	global IS_USER_ACTIVE
 	if msg in PLACES_VARIANT and IS_USER_ACTIVE==False:		
@@ -69,18 +74,24 @@ def submit_location(update, context):
 		USER_PLACE = msg
 		text = f'`{update.effective_message.text}`\n\n*Давай теперь оценим его! Для этого тебе надо будет ответить на несколько вопросов. Или ты можешь узнать, что другие думаю про это место*'
 		reply_markup = ReplyKeyboardMarkup([['Оценить заведение'],['Проверить'],['Советы при ЧС']], resize_keyboard=True)
+		logger.info("User %s: submit location '%s' ", update.message.chat.id, USER_PLACE)
 		update.message.reply_text(text=text, reply_markup=reply_markup, parse_mode='markdown')
 
 # True mode--- place info
 def place_find_output(update, context):
 	if IS_USER_ACTIVE:
+		logger.info("User %s: ask '%s' place info.", update.message.chat.id, USER_PLACE)
 		update.message.reply_text(text=f'Вот все, что у меня есть про это место: {USER_PLACE}', parse_mode='markdown')
 
 # True mode--- lets estimate place
 def place_estimation(update, context):
 	if IS_USER_ACTIVE:
+		logger.info("User %s: started estimate '%s' place ", update.message.chat.id, USER_PLACE)
 		update.message.reply_text(text=f'*Давай оценим: {USER_PLACE}*\n\n Ответь на вопросы ниже!', parse_mode='markdown')
-		return QUEST_1
+		q1(update, context)
+
+
+
 
 
 
@@ -163,6 +174,9 @@ def finish_est(update, context):
 
 
 
+
+
+
 # End commant of ConversationHandler
 def cancel(update, context):
     update.message.reply_text(text='Пока!',  reply_markup=ReplyKeyboardRemove())
@@ -189,7 +203,6 @@ if __name__ == "__main__":
 	dispatcher.add_handler(ConversationHandler(
 			entry_points=[MessageHandler(Filters.regex('^Оценить заведение$'), place_estimation)],
 			states={
-				QUEST_1: [CallbackQueryHandler(q1)],
 				QUEST_2: [CallbackQueryHandler(q2)],
 				QUEST_3: [CallbackQueryHandler(q3)],
 				QUEST_4: [CallbackQueryHandler(q4)],
@@ -201,3 +214,4 @@ if __name__ == "__main__":
 
 
 	updater.start_polling()	
+	updater.idle()
