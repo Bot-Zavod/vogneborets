@@ -88,7 +88,7 @@ def place_estimation(update, context):
 	if IS_USER_ACTIVE:
 		logger.info("User %s: started estimate '%s' place ", update.message.chat.id, USER_PLACE)
 		update.message.reply_text(text=f'*Давай оценим: {USER_PLACE}*\n\n Ответь на вопросы ниже!', parse_mode='markdown')
-		q1(update, context)
+		return QUEST_1
 
 
 
@@ -203,6 +203,7 @@ if __name__ == "__main__":
 	dispatcher.add_handler(ConversationHandler(
 			entry_points=[MessageHandler(Filters.regex('^Оценить заведение$'), place_estimation)],
 			states={
+				QUEST_1: [CallbackQueryHandler(q1)],
 				QUEST_2: [CallbackQueryHandler(q2)],
 				QUEST_3: [CallbackQueryHandler(q3)],
 				QUEST_4: [CallbackQueryHandler(q4)],
