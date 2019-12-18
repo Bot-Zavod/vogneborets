@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 Users = Users()
 
 # autodeleting depricated users
-def print_lox():
+def autodeleting():
 	while True:
 		sleep(30) # Wait 30 sec
 		us = Users.getOldUsers()
@@ -25,7 +25,7 @@ def print_lox():
 			print(f'User {x}: deleted from memory')
 
 # start thread
-thread = threading.Thread(target=print_lox)
+thread = threading.Thread(target=autodeleting)
 thread.start()
 
 
