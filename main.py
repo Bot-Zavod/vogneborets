@@ -49,7 +49,7 @@ def start_command(update, context):
 		text = f"*Добрый день, {first_name}!*\n\nОтправьте нам свое местоположение, тоб мы могли провести оценку места"
 		location_button_text = "Отправить местоположение"
 		button = 'Советы при ЧС'
-		location_button = KeyboardButton(text=button_text, request_location = True)
+		location_button = KeyboardButton(text=location_button_text, request_location = True)
 		reply_markup = ReplyKeyboardMarkup([[location_button],[button]], resize_keyboard=True)
 	
 	logger.info("User %s: send /start command", update.message.chat.id, )
@@ -176,8 +176,6 @@ def question(update, context, question_text):
 	# -----------Update User Activity--------------
 	Users.update_last_activity(chat_id)
 
-
-
 def answer(update, context):
 	query = update.callback_query
 	chat_id = query.message.chat.id
@@ -212,6 +210,22 @@ def check_comment(update, context):
 	# -----------Update User Activity--------------
 	Users.update_last_activity(chat_id)
 
+def change_lang(update, context):
+	question_text = '*Выбери язык:*'
+	button1 = InlineKeyboardButton('Русский 🇷🇺', callback_data='ru')
+	button2 = InlineKeyboardButton('Украинский 🇺🇦', callback_data='ua')
+	button3 = InlineKeyboardButton('English 🇺🇸', callback_data='en')
+	keyboard = InlineKeyboardMarkup([[button1], [button2], [button3]])
+
+	update.message.reply_text(text=question_text, parse_mode='markdown', reply_markup=keyboard)
+
+def select_lang(update, context):
+	query = update.callback_query.message
+	context.bot.delete_message(query.chat.id, query.message_id)
+	text = 'Хороший выбор!'
+	update.callback_query.message.reply_text(text=text, parse_mode='markdown')
+
+
 if __name__ == "__main__":
 	# Initialized BOT
 	updater, dispatcher = BotInitialize()
@@ -221,6 +235,9 @@ if __name__ == "__main__":
 
 	# test command
 	dispatcher.add_handler(CommandHandler('test', test))
+
+	# change language
+	dispatcher.add_handler(CommandHandler('change_lang', change_lang))
 
 	# Instructions and Tips
 	dispatcher.add_handler(MessageHandler(Filters.regex('^Советы при ЧС$'), Instructions))
@@ -233,8 +250,11 @@ if __name__ == "__main__":
 
 	dispatcher.add_handler(MessageHandler(Filters.regex('^Оценить заведение$'), place_estimation))
 
+	dispatcher.add_handler(CallbackQueryHandler(select_lang, pattern='^(ru|ua|en)$'))
+
 	# for write answers
 	dispatcher.add_handler(CallbackQueryHandler(answer))
+
 
 
 	# For more comfortable start and stop from console
