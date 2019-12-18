@@ -1,5 +1,6 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+# from Database.TwinklyDb import *
 from GeoReverse import CoordinatesToAdress
 from init import BotInitialize
 from time import sleep
@@ -10,6 +11,12 @@ import logging
 # LOGSLOGSLOGS
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# iMITATE USER_db
+# QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT, FINISH = range(6)
+
+QUESTION_ACTIVE = 0
+ANSWERS = []
 
 # Active users list. Users.allUsers() - to show all Users
 Users = Users()
