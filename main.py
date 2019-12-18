@@ -28,7 +28,7 @@ def autodeleting():
 thread = threading.Thread(target=autodeleting)
 thread.start()
 
-
+# Texts to bot
 
 # start message
 def start_command(update, context):	
@@ -39,13 +39,18 @@ def start_command(update, context):
 	# Check user mode for correct menu
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
 		text = f"*Добрый день, {first_name}!*\n\nРады вас видеть! Выберите действие из меню ниже."
-		reply_markup = ReplyKeyboardMarkup([['Оценить заведение'],['Проверить'],['Советы при ЧС']], resize_keyboard=True)
+		button1 = 'Оценить заведение'
+		button2 = 'Проверить'
+		button3 = 'Советы при ЧС'
+		reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]], resize_keyboard=True)
 	else:
 		# add new User
 		Users.addUser(chat_id, first_name)
 		text = f"*Добрый день, {first_name}!*\n\nОтправьте нам свое местоположение, тоб мы могли провести оценку места"
-		location_button = KeyboardButton(text="Отправить местоположение", request_location = True)
-		reply_markup = ReplyKeyboardMarkup([[location_button],['Советы при ЧС']], resize_keyboard=True)
+		location_button_text = "Отправить местоположение"
+		button = 'Советы при ЧС'
+		location_button = KeyboardButton(text=button_text, request_location = True)
+		reply_markup = ReplyKeyboardMarkup([[location_button],[button]], resize_keyboard=True)
 	
 	logger.info("User %s: send /start command", update.message.chat.id, )
 	update.message.reply_sticker(sticker=sticker)
@@ -59,11 +64,13 @@ def Instructions(update, context):
 	# add User if he is absent, return False if absent
 	Users.addUser(update.message.chat.id, update.message.chat.first_name)
 	logger.info("User %s: ask instructions", update.message.chat.id)
-	update.message.reply_text(text='*Инструкции при пожаре и других ЧС!*', parse_mode='markdown')
+	text = '*Инструкции при пожаре и других ЧС!*'
+	update.message.reply_text(text=text, parse_mode='markdown')
 
 def test(update, context):
 	print(Users.allUsers())
-	update.message.reply_text(text='Читайте логи', parse_mode='markdown')
+	text = 'Читайте логи'
+	update.message.reply_text(text=text, parse_mode='markdown')
 
 # Location message
 def check_location(update, context):
@@ -82,7 +89,8 @@ def check_location(update, context):
 			PLACES_VARIANT.append(x['name'])
 
 		reply_markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-		update.message.reply_text(text='*В каком именно заведении вы находитесь?*', reply_markup=reply_markup, parse_mode='markdown')
+		text = '*В каком именно заведении вы находитесь?*'
+		update.message.reply_text(text=text, reply_markup=reply_markup, parse_mode='markdown')
 		# add places to Users
 		Users.changePlacesVariant(chat_id, PLACES_VARIANT)
 
@@ -90,8 +98,10 @@ def check_location(update, context):
 		reg = '^'+'|'.join(PLACES_VARIANT)+'$'
 		logger.info("User %s: send location %s", update.message.chat.id, str(lat)+','+str(lon))
 		dispatcher.add_handler(MessageHandler(Filters.regex(reg), submit_location))
+
 	else:
-		update.message.reply_text(text='*Что-то я ничего не вижу. Попробуй еще раз!*', parse_mode='markdown')
+		text = '*Что-то я ничего не вижу. Попробуй еще раз!*'
+		update.message.reply_text(text=text, parse_mode='markdown')
 
 	# -----------Update User Activity--------------
 	Users.update_last_activity(chat_id)
@@ -107,7 +117,10 @@ def submit_location(update, context):
 		Users.changeUserPlace(chat_id, msg)
 
 		text = f'`{update.effective_message.text}`\n\n*Давай теперь оценим его! Для этого тебе надо будет ответить на несколько вопросов. Или ты можешь узнать, что другие думаю про это место*'
-		reply_markup = ReplyKeyboardMarkup([['Оценить заведение'],['Проверить'],['Советы при ЧС']], resize_keyboard=True)
+		button1 = 'Оценить заведение'
+		button2 = 'Проверить'
+		button3 = 'Советы при ЧС'
+		reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]], resize_keyboard=True)
 		logger.info("User %s: submit location '%s' ", update.message.chat.id, Users.getUser(chat_id)['USER_PLACE'])
 		update.message.reply_text(text=text, reply_markup=reply_markup, parse_mode='markdown')
 
@@ -119,7 +132,8 @@ def place_find_output(update, context):
 	chat_id = update.message.chat.id
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
 		logger.info("User %s: ask '%s' place info.", chat_id, Users.getUser(chat_id)['USER_PLACE'])
-		update.message.reply_text(text=f"Вот все, что у меня есть про это место: { Users.getUser(chat_id)['USER_PLACE'] }", parse_mode='markdown')
+		text = f"Вот все, что у меня есть про это место: { Users.getUser(chat_id)['USER_PLACE'] }"
+		update.message.reply_text(text=text, parse_mode='markdown')
 
 	# -----------Update User Activity--------------
 	Users.update_last_activity(chat_id)
@@ -189,7 +203,10 @@ def check_comment(update, context):
 	chat_id = update.message.chat.id
 	Users.addComment(chat_id, update.message.text)
 	text = '*Спасибо вам за отзыв!\n\nВот похожие...*'
-	reply_markup = ReplyKeyboardMarkup([['Оценить заведение'],['Проверить'],['Советы при ЧС']], resize_keyboard=True)
+	button1 = 'Оценить заведение'
+	button2 = 'Проверить'
+	button3 = 'Советы при ЧС'
+	reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]], resize_keyboard=True)
 	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=reply_markup)
 
 	# -----------Update User Activity--------------
