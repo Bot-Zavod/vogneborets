@@ -1,5 +1,6 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+# from Database.TwinklyDb import *
 from GeoReverse import CoordinatesToAdress
 from init import BotInitialize
 from time import sleep
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 # iMITATE USER_db
 # QUEST_1, QUEST_2, QUEST_3, QUEST_4, COMMENT, FINISH = range(6)
 
-QUESTIONS = ['Ты пацан?', 'Завтра утром ты будешь кушать кашу?', 'У тебя собака есть?', 'Ты умный парень?']
+QUESTION_ACTIVE = 0
 ANSWERS = []
 
 # Active users list. Users.allUsers() - to show all Users
@@ -52,7 +53,6 @@ def test(update, context):
 	print(Users.allUsers())
 	update.message.reply_text(text='Читайте логи', parse_mode='markdown')
 
-
 # Location message
 def check_location(update, context):
 	chat_id = update.message.chat.id
@@ -81,9 +81,6 @@ def check_location(update, context):
 	else:
 		update.message.reply_text(text='*Что-то я ничего не вижу. Попробуй еще раз!*', parse_mode='markdown')
 
-	
-
-
 # Submit location and turn True mode on User
 def submit_location(update, context):
 	chat_id = update.message.chat.id
@@ -109,32 +106,61 @@ def place_find_output(update, context):
 # True mode--- lets estimate place
 def place_estimation(update, context):
 	chat_id = update.message.chat.id
-	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
+	if Users.getUser(chat_id) and Users.getUser(chat_id)['status'] and Users.getUser(chat_id)['ACTIVE_QUESTION'] != '':
 		logger.info("User %s: started estimate '%s' place ", chat_id, Users.getUser(chat_id)['USER_PLACE'])
-		update.message.reply_text(text=f"*Давай оценим: { Users.getUser(chat_id)['USER_PLACE'] }*\n\n Ответь на вопросы ниже!", parse_mode='markdown')
+		text = f"*Давай оценим: { Users.getUser(chat_id)['USER_PLACE'] }*\n\nОтветь на вопросы ниже!"
+		update.message.reply_text(text=text, parse_mode='markdown')
 
-		# sending a question
-		for question_text, i in enumerate(QUESTIONS):
-			questions(update, context, question_text)
-			dispatcher.add_handler(CallbackQueryHandler(answer))
+		# send questions messanges
+		QUESTIONS = Users.getUser(chat_id)['QUESTIONS']
+		ACTIVE_QUESTION = Users.getUser(chat_id)['ACTIVE_QUESTION']
+		question_text = QUESTIONS[ACTIVE_QUESTION]
+		question(update, context, question_text)
+
+	else:
+		text = "*Вы уже оценивали это место!*"
+		update.message.reply_text(text=text, parse_mode='markdown')
 
 
-def questions(update, context, question_text):
+def question(update, context, question_text):
+	if update.callback_query:
+		update = update.callback_query
+	
+	chat_id = update.message.chat.id
 	button1 = InlineKeyboardButton('Да ✅', callback_data='yes')
 	button2 = InlineKeyboardButton('Нет ❌', callback_data='no')
 	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='i dont know')
 	keyboard = InlineKeyboardMarkup([[button1, button2],[button3]])
+
 	update.message.reply_text(text=question_text, parse_mode='markdown', reply_markup=keyboard)
-	dispatcher.add_handler(CallbackQueryHandler(answer))
+	Users.uppActiveQuestion(chat_id)
+
 
 
 def answer(update, context):
 	query = update.callback_query
+	chat_id = query.message.chat.id
 	context.bot.delete_message(query.message.chat.id, query.message.message_id)
 	print('message_id',query.message.message_id,':',query.message.text,' - ',query.data)
 
+	Users.addAnswer(chat_id, query.data)
+	ACTIVE_QUESTION = Users.getUser(chat_id)['ACTIVE_QUESTION']
 
+	if ACTIVE_QUESTION == 'comment':
+		dispatcher.add_handler(MessageHandler(Filters.text, check_comment))
+		text = '*Оставьте комментарий!*'
+		context.bot.send_message(query.message.chat.id, text=text, parse_mode='markdown', reply_markup=ReplyKeyboardRemove())
+	else:
+		QUESTIONS = Users.getUser(chat_id)['QUESTIONS']
+		question_text = QUESTIONS[ACTIVE_QUESTION]
+		question(update, context, question_text)
 
+def check_comment(update, context):
+	chat_id = update.message.chat.id
+	Users.addComment(chat_id, update.message.text)
+	text = '*Спасибо вам за отзыв!\n\nВот похожие...*'
+	reply_markup = ReplyKeyboardMarkup([['Оценить заведение'],['Проверить'],['Советы при ЧС']], resize_keyboard=True)
+	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=reply_markup)
 
 if __name__ == "__main__":
 	# Initialized BOT
@@ -157,6 +183,11 @@ if __name__ == "__main__":
 
 	dispatcher.add_handler(MessageHandler(Filters.regex('^Оценить заведение$'), place_estimation))
 
+	# for write answers
+	dispatcher.add_handler(CallbackQueryHandler(answer))
+
+
 	# For more comfortable start and stop from console
 	updater.start_polling()	
 	updater.idle()
+

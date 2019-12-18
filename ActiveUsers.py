@@ -8,7 +8,17 @@ class Users():
 	# add new user
 	def addUser(self, chat_id, name):
 		if self.getUser(chat_id) == False:
-			self.__user_list.append({'chat_id': chat_id, 'name': name, 'status': False, 'PLACES_VARIANT':[], 'USER_PLACE':'', 'ANSWERS':[]})
+			self.__user_list.append({
+				'chat_id': chat_id, 
+				'name': name, 
+				'status': False, 
+				'PLACES_VARIANT':[], 
+				'USER_PLACE':'', 
+				'ANSWERS':[], 
+				'QUESTIONS':[], 
+				'ACTIVE_QUESTION': 0,
+				'COMMENT': ''
+				})
 		else:
 			return False
 
@@ -30,8 +40,9 @@ class Users():
 	def changeUserPlace(self, chat_id, USER_PLACE):
 		for x in self.__user_list:
 			if x['chat_id'] == chat_id:
-				x.update({'USER_PLACE': USER_PLACE})
-				x.update({'PLACES_VARIANT': []})
+				QUESTIONS = ['Ты пацан?', 'Завтра утром ты будешь кушать кашу?', 'У тебя собака есть?', 'Ты умный парень?']
+				x.update({'USER_PLACE': USER_PLACE, 'PLACES_VARIANT': [], 'QUESTIONS': QUESTIONS})
+				
 
 	# change variant of place
 	def changePlacesVariant(self, chat_id, PLACES_VARIANT):
@@ -44,6 +55,30 @@ class Users():
 		for x in self.__user_list:
 			if x['chat_id'] == chat_id:
 				x['ANSWERS'].append(answer)
+				# try:
+				# 	if  x['ACTIVE_QUESTION']+1 == len(x['QUESTIONS']):
+				# 		x['ACTIVE_QUESTION'] = 'comment'
+				# 	else:
+				# 		x['ACTIVE_QUESTION'] += 1
+				# except Exception as e:
+				# 	print('BLABLA ERROR: bug that i not fixed (^_^) ')
+
+	def uppActiveQuestion(self, chat_id):
+		for x in self.__user_list:
+			if x['chat_id'] == chat_id:
+				if  x['ACTIVE_QUESTION']+1 == len(x['QUESTIONS']):
+					x['ACTIVE_QUESTION'] = 'comment'
+				else:
+					x['ACTIVE_QUESTION'] += 1
+
+	def addComment(self, chat_id, text):
+		for x in self.__user_list:
+			if x['chat_id'] == chat_id:
+				x.update({'ACTIVE_QUESTION': '', 'COMMENT': text})
+
+	def DeleteUser(self, chat_id):
+		pass
+
 
 
 if __name__ == '__main__':
@@ -65,4 +100,6 @@ if __name__ == '__main__':
 	users.addAnswer(1, 'yes')
 	users.addAnswer(1, 'no')
 	users.addAnswer(1, 'wtf')
+	users.addAnswer(1, 'wtf')
+	users.addComment(1, 'erherthsfdh herthr therther ther th')
 	print(users.getUser(1))
