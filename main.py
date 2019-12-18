@@ -5,6 +5,7 @@ from init import BotInitialize
 from time import sleep
 from ActiveUsers import *
 import logging
+import threading 
 
 
 # LOGSLOGSLOGS
@@ -13,6 +14,21 @@ logger = logging.getLogger(__name__)
 
 # Active users list. Users.allUsers() - to show all Users
 Users = Users()
+
+# autodeleting depricated users
+def print_lox():
+	while True:
+		sleep(30) # Wait 30 sec
+		us = Users.getOldUsers()
+		for x in us:
+			Users.delete_user(x)
+			print(f'User {x}: deleted from memory')
+
+# start thread
+thread = threading.Thread(target=print_lox)
+thread.start()
+
+
 
 # start message
 def start_command(update, context):	
@@ -31,9 +47,12 @@ def start_command(update, context):
 		location_button = KeyboardButton(text="Отправить местоположение", request_location = True)
 		reply_markup = ReplyKeyboardMarkup([[location_button],['Советы при ЧС']], resize_keyboard=True)
 	
-	logger.info("User %s: send /start command", update.message.chat.id)
+	logger.info("User %s: send /start command", update.message.chat.id, )
 	update.message.reply_sticker(sticker=sticker)
 	update.message.reply_text(text=text, reply_markup=reply_markup, parse_mode='markdown')
+
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
 
 # Instructions during emergency situations 
 def Instructions(update, context):
@@ -74,6 +93,9 @@ def check_location(update, context):
 	else:
 		update.message.reply_text(text='*Что-то я ничего не вижу. Попробуй еще раз!*', parse_mode='markdown')
 
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
+
 # Submit location and turn True mode on User
 def submit_location(update, context):
 	chat_id = update.message.chat.id
@@ -89,12 +111,18 @@ def submit_location(update, context):
 		logger.info("User %s: submit location '%s' ", update.message.chat.id, Users.getUser(chat_id)['USER_PLACE'])
 		update.message.reply_text(text=text, reply_markup=reply_markup, parse_mode='markdown')
 
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
+
 # True mode--- place info
 def place_find_output(update, context):
 	chat_id = update.message.chat.id
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
 		logger.info("User %s: ask '%s' place info.", chat_id, Users.getUser(chat_id)['USER_PLACE'])
 		update.message.reply_text(text=f"Вот все, что у меня есть про это место: { Users.getUser(chat_id)['USER_PLACE'] }", parse_mode='markdown')
+
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
 
 # True mode--- lets estimate place
 def place_estimation(update, context):
@@ -114,6 +142,9 @@ def place_estimation(update, context):
 		text = "*Вы уже оценивали это место!*"
 		update.message.reply_text(text=text, parse_mode='markdown')
 
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
+
 
 def question(update, context, question_text):
 	if update.callback_query:
@@ -127,6 +158,9 @@ def question(update, context, question_text):
 
 	update.message.reply_text(text=question_text, parse_mode='markdown', reply_markup=keyboard)
 	Users.uppActiveQuestion(chat_id)
+
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
 
 
 
@@ -148,12 +182,18 @@ def answer(update, context):
 		question_text = QUESTIONS[ACTIVE_QUESTION]
 		question(update, context, question_text)
 
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
+
 def check_comment(update, context):
 	chat_id = update.message.chat.id
 	Users.addComment(chat_id, update.message.text)
 	text = '*Спасибо вам за отзыв!\n\nВот похожие...*'
 	reply_markup = ReplyKeyboardMarkup([['Оценить заведение'],['Проверить'],['Советы при ЧС']], resize_keyboard=True)
 	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=reply_markup)
+
+	# -----------Update User Activity--------------
+	Users.update_last_activity(chat_id)
 
 if __name__ == "__main__":
 	# Initialized BOT
