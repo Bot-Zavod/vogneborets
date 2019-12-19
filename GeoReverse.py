@@ -21,7 +21,8 @@ def CoordinatesToAdress(coordinates):
     # getting the key from init module
     key = MapInitialize()
     
-    link0 ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+coordinates+"&type=establishment&language=ru&radius=30&key="+key
+    link0 ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+coordinates+"&language=ru&radius=30&key="+key
+    # print(link0)
     adress=[]
     output0 = loads(get(link0).text)   
     if len(output0['results'])!=0:
@@ -37,7 +38,8 @@ def CoordinatesToAdress(coordinates):
     else:
         raise Exception('No company')
 
-    link = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+coordinates+"&language=ru&location_type=ROOFTOP&key="+key
+    link = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+coordinates+"&language=ru&result_type=street_address&key="+key
+    # print(link)
     # we open the google page downloading their JSON as str and turning it into python file
     output = loads(get(link).text)
     if len(output0['results'])!=0:
@@ -81,8 +83,8 @@ def AdressToCoordinates(adress):
     return coordinates
 
 if __name__ == "__main__":
-    a = CoordinatesToAdress("46.48402859999999,30.737146")
+    a = CoordinatesToAdress("46.4853906,30.7250282")
     for x in a:
         print(x['typ'],"\t",x['name'])
     # CoordinatesToAdress("46.48402859999999,30.737146")
-    # print(AdressToCoordinates('Дерибасовская Ева'))
+    # print(AdressToCoordinates("Нежинская 39"))
