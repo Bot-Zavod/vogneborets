@@ -34,7 +34,8 @@ def CoordinatesToAdress(coordinates):
                 lng = output0['results'][0]['geometry']['location']['lng']
                 typ = output0['results'][ad]['types'][0]
                 typ = find_type(typ)
-                adress.append({'name':name, 'adr':adr, 'typ': typ, 'loc':(lat,lng)})
+                place_id = output0['results'][0]['place_id']
+                adress.append({'name':name, 'adr':adr, 'typ': typ, 'loc':(lat,lng), 'id':place_id})
     else:
         raise Exception('No company')
 
@@ -42,7 +43,7 @@ def CoordinatesToAdress(coordinates):
     # print(link)
     # we open the google page downloading their JSON as str and turning it into python file
     output = loads(get(link).text)
-    if len(output0['results'])!=0:
+    if len(output['results'])!=0:
         for ad in range(len(output['results'])):
             # itarate and format all available adresses
             adr = output['results'][ad]['formatted_address']
@@ -50,9 +51,10 @@ def CoordinatesToAdress(coordinates):
             adr = adr[:-5]
             adr = " ".join(adr)
             adr = adr[:-1]
-            lat = output0['results'][0]['geometry']['location']['lat']
-            lng = output0['results'][0]['geometry']['location']['lng']
-            adress.append({'name': adr, 'adr':adr, 'typ': 6, 'loc':(lat,lng)})
+            lat = output['results'][0]['geometry']['location']['lat']
+            lng = output['results'][0]['geometry']['location']['lng']
+            place_id = output['results'][0]['place_id']
+            adress.append({'name': adr, 'adr':adr, 'typ': 6, 'loc':(lat,lng), 'id':place_id})
     else:
         raise Exception('No such adress')
    
@@ -85,6 +87,6 @@ def AdressToCoordinates(adress):
 if __name__ == "__main__":
     a = CoordinatesToAdress("46.4853906,30.7250282")
     for x in a:
-        print(x['typ'],"\t",x['name'])
+        print(x['typ'],"\t",x['name'],"\t",x['id'])
     # CoordinatesToAdress("46.48402859999999,30.737146")
     # print(AdressToCoordinates("Нежинская 39"))
