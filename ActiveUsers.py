@@ -1,3 +1,5 @@
+import time 
+
 class Users():
 	def __init__(self):
 		self.__user_list = []
@@ -17,10 +19,30 @@ class Users():
 				'ANSWERS':[], 
 				'QUESTIONS':[], 
 				'ACTIVE_QUESTION': 0,
-				'COMMENT': ''
+				'COMMENT': '',
+				'LAST_ACTIVE': time.time()
 				})
 		else:
 			return False
+
+
+	def getOldUsers(self):
+		res = []
+		for i, x in enumerate(self.__user_list):
+			if time.time()-x['LAST_ACTIVE'] >= 1800:  #change to 1600 (30min)
+				res.append(x['chat_id'])
+		return res
+
+	# Update Last active time user
+	def update_last_activity(self, chat_id):
+		for x in self.__user_list:
+			if x['chat_id'] == chat_id:
+				x.update({'LAST_ACTIVE': time.time()})				
+
+	def delete_user(self, chat_id):
+		for i, x in enumerate(self.__user_list):
+			if x['chat_id'] == chat_id:
+				del self.__user_list[i]
 
 	def getUser(self, chat_id):
 		# return user by chat_id
@@ -75,10 +97,6 @@ class Users():
 		for x in self.__user_list:
 			if x['chat_id'] == chat_id:
 				x.update({'ACTIVE_QUESTION': '', 'COMMENT': text})
-
-	def DeleteUser(self, chat_id):
-		pass
-
 
 
 if __name__ == '__main__':
