@@ -16,12 +16,16 @@ def run_query(stmt):
 def run_query_nofetch(stmt):
     with closing(psycopg2.connect(dbname=credentials.dbname, user=credentials.user, password=credentials.password, host=credentials.host, port=credentials.port)) as conn:
         with conn.cursor() as cursor:
-            cursor.execute(stmt)
-            conn.commit()        
+        	# ETO NE PRAVILNO NO POX
+        	try:
+	            cursor.execute(stmt)
+	            conn.commit()  
+	        except Exception as e:
+	        	print(str(e))     
 
 class User:
 
-    column_names = ['chat_id', 'first_name', 'last_name', 'username']
+    column_names = ['chat_id', 'first_name', 'last_name', 'username', 'language','reg_date']
 
     def __init__(self, chat_id ,first_name,last_name, username, user_id = None):
         self.chat_id = chat_id
@@ -36,10 +40,13 @@ class User:
     #Add new user to database
 
     @classmethod
-    def addNewUser(cls, chat_id, first_name, last_name, username):
-        stmt = SQL('INSERT INTO "Users" ({}) VALUES ({})').format(
+    def addNewUser(cls, chat_id, first_name, last_name, username, language):
+
+    	# ADD language table
+
+        stmt = SQL('INSERT INTO "Users" ({}) VALUES ({}, current_date)').format(
             SQL(',').join(map(sql.Identifier, cls.column_names)),
-            SQL(',').join(map(sql.Literal, [chat_id, first_name, last_name, username])),
+            SQL(',').join(map(sql.Literal, [chat_id, first_name, last_name, username, language])),
         )
         run_query_nofetch(stmt)
 
@@ -137,10 +144,10 @@ class Question:
 
 class Review:
 
-    column_names = ['user_id', 'q_json', 'form_id', 'lat', 'lon', 'adr', 'place', 'comment', 'mark']
+    column_names = ['chat_id', 'q_json', 'form_id', 'lat', 'lon', 'adr', 'place', 'comment', 'mark']
     
     def __init__(self, user_id, q_json, form_id, lat, lon, adr, place, comment, mark, review_id = None):
-        self.user_id = user_id
+        self.chat_id = chat_id
         self.q_json = q_json
         self.form_id = form_id
         self.lat = lat
@@ -152,7 +159,7 @@ class Review:
         self.review_id = review_id
 
     def __repr__(self):
-        return f'Review: {self.q_json}, by: {self.user_id}, place: {self.place}, comment: {self.comment}, id: {self.review_id}'
+        return f'Review: {self.q_json}, by: {self.chat_id}, place: {self.place}, comment: {self.comment}, id: {self.review_id}'
 
     @classmethod
     def getReview(cls, review_id):
@@ -163,11 +170,28 @@ class Review:
 
     @classmethod
     def addReview(cls, *args, **kwargs):
-        stmt = SQL('INSERT INTO "Reviews" ({}) VALUES ({})').format(
+        stmt = SQL('INSERT INTO "Reviews" ({}, submit_time) VALUES ({}, current_timestamp)').format(
             SQL(',').join(map(sql.Identifier, cls.column_names)),
             SQL(',').join(map(sql.Literal, args)),
         )
         run_query_nofetch(stmt)
+
+    @classmethod
+    def getMark(cls, id):
+        stmt = SQL('SELECT AVG(mark) FROM "Reviews" WHERE adr = {}').format(sql.Literal(id))
+        result = run_query(stmt)
+        print(result)
+        if len(result) == 0:
+        	return 0
+        return(int(result[0][0]))
+
+    @classmethod
+    def getComments(cls, id):
+        stmt = SQL('SELECT comment FROM "Reviews" WHERE adr = {} ORDER BY submit_time DESC LIMIT 3;').format(sql.Literal(id))
+        result = run_query(stmt)
+        if len(result) == 0:
+        	return []
+        return([msg[0] for msg in result], cls.getMark(id))
     
 
 #EXAMPLES
@@ -191,3 +215,5 @@ class Review:
 # questions = Question.getQuestions(form.questions, 'UA')
 # for q in questions:
 #     print (q)
+# print(Review.getMark('--'))
+# print(Review.getComments('--'))

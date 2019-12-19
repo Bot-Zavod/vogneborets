@@ -8,6 +8,7 @@ import logging
 import threading 
 
 
+
 # LOGSLOGSLOGS
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,7 +33,10 @@ thread.start()
 
 # start message
 def start_command(update, context):	
-	first_name = update.message.chat.first_name	
+	first_name = update.message.chat.first_name
+	last_name = update.message.chat.last_name
+	username = update.message.chat.username
+	language = update._effective_user.language_code
 	chat_id = update.message.chat.id
 	sticker = "CAADAgAD_iAAAulVBRgi4A0qOPfBBRYE"
 
@@ -45,7 +49,7 @@ def start_command(update, context):
 		reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]], resize_keyboard=True)
 	else:
 		# add new User
-		Users.addUser(chat_id, first_name)
+		Users.addUser(chat_id, first_name, last_name, username, language)
 		text = f"*Добрый день, {first_name}!*\n\nОтправьте нам свое местоположение, тоб мы могли провести оценку места"
 		location_button_text = "Отправить местоположение"
 		button = 'Советы при ЧС'
@@ -61,8 +65,13 @@ def start_command(update, context):
 
 # Instructions during emergency situations 
 def Instructions(update, context):
+	first_name = update.message.chat.first_name
+	last_name = update.message.chat.last_name
+	username = update.message.chat.username
+	language = update._effective_user.language_code
+	chat_id = update.message.chat.id
 	# add User if he is absent, return False if absent
-	Users.addUser(update.message.chat.id, update.message.chat.first_name)
+	Users.addUser(chat_id, first_name, last_name, username, language)
 	logger.info("User %s: ask instructions", update.message.chat.id)
 	text = '*Инструкции при пожаре и других ЧС!*'
 	update.message.reply_text(text=text, parse_mode='markdown')
@@ -74,19 +83,23 @@ def test(update, context):
 
 # Location message
 def check_location(update, context):
+	first_name = update.message.chat.first_name
+	last_name = update.message.chat.last_name
+	username = update.message.chat.username
+	language = update._effective_user.language_code
 	chat_id = update.message.chat.id
 	lon = update.effective_message.location.longitude
 	lat = update.effective_message.location.latitude
 	res = CoordinatesToAdress(str(lat)+','+str(lon))
 	# add User if he is absent, return False if absent
-	Users.addUser(chat_id, update.message.chat.first_name)
+	Users.addUser(chat_id, first_name, last_name, username, language)
 
 	if len(res) > 0:
 		buttons = []
 		PLACES_VARIANT = []
 		for x in res:
 			buttons.append([x['name']])
-			PLACES_VARIANT.append(x['name'])
+			PLACES_VARIANT.append( (x['name'], x['loc'], x['typ']) )
 
 		reply_markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 		text = '*В каком именно заведении вы находитесь?*'
@@ -95,7 +108,7 @@ def check_location(update, context):
 		Users.changePlacesVariant(chat_id, PLACES_VARIANT)
 
 		# Submit the correct location
-		reg = '^'+'|'.join(PLACES_VARIANT)+'$'
+		reg = '^'+'|'.join([x[0] for x in PLACES_VARIANT])+'$'
 		logger.info("User %s: send location %s", update.message.chat.id, str(lat)+','+str(lon))
 		dispatcher.add_handler(MessageHandler(Filters.regex(reg), submit_location))
 
@@ -110,11 +123,13 @@ def check_location(update, context):
 def submit_location(update, context):
 	chat_id = update.message.chat.id
 	msg = update.effective_message.text
+	PLACES_VARIANT = Users.getUser(chat_id)['PLACES_VARIANT']
 
 	# check user mode and correct it
-	if msg in Users.getUser(chat_id)['PLACES_VARIANT'] and Users.getUser(chat_id)['status']==False:		
-		Users.changeUserStatus(chat_id, True)	
-		Users.changeUserPlace(chat_id, msg)
+	if msg in [x[0] for x in PLACES_VARIANT] and Users.getUser(chat_id)['status']==False:		
+		Users.changeUserStatus(chat_id, True)
+		USER_PLACE = [i for i in PLACES_VARIANT if i[0] == msg ][0]
+		Users.changeUserPlace(chat_id, USER_PLACE)
 
 		text = f'`{update.effective_message.text}`\n\n*Давай теперь оценим его! Для этого тебе надо будет ответить на несколько вопросов. Или ты можешь узнать, что другие думаю про это место*'
 		button1 = 'Оценить заведение'
@@ -132,7 +147,12 @@ def place_find_output(update, context):
 	chat_id = update.message.chat.id
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
 		logger.info("User %s: ask '%s' place info.", chat_id, Users.getUser(chat_id)['USER_PLACE'])
-		text = f"Вот все, что у меня есть про это место: { Users.getUser(chat_id)['USER_PLACE'] }"
+
+		# get texts
+		place_id = '--'
+		nn_reviews, mark = Review.getComments(place_id)
+		reviews = '\n\n'.join(nn_reviews)
+		text = f"Вот все, что у меня есть про это место: { Users.getUser(chat_id)['USER_PLACE'][0] }\n*Оценка равна: {mark}*\n\n{reviews}"
 		update.message.reply_text(text=text, parse_mode='markdown')
 
 	# -----------Update User Activity--------------
@@ -143,7 +163,7 @@ def place_estimation(update, context):
 	chat_id = update.message.chat.id
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status'] and Users.getUser(chat_id)['ACTIVE_QUESTION'] != '':
 		logger.info("User %s: started estimate '%s' place ", chat_id, Users.getUser(chat_id)['USER_PLACE'])
-		text = f"*Давай оценим: { Users.getUser(chat_id)['USER_PLACE'] }*\n\nОтветь на вопросы ниже!"
+		text = f"*Давай оценим: { Users.getUser(chat_id)['USER_PLACE'][0] }*\n\nОтветь на вопросы ниже!"
 		update.message.reply_text(text=text, parse_mode='markdown')
 
 		# send questions messanges
@@ -167,7 +187,7 @@ def question(update, context, question_text):
 	chat_id = update.message.chat.id
 	button1 = InlineKeyboardButton('Да ✅', callback_data='yes')
 	button2 = InlineKeyboardButton('Нет ❌', callback_data='no')
-	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='i dont know')
+	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='idn')
 	keyboard = InlineKeyboardMarkup([[button1, button2],[button3]])
 
 	update.message.reply_text(text=question_text, parse_mode='markdown', reply_markup=keyboard)
@@ -199,16 +219,24 @@ def answer(update, context):
 
 def check_comment(update, context):
 	chat_id = update.message.chat.id
-	Users.addComment(chat_id, update.message.text)
-	text = '*Спасибо вам за отзыв!\n\nВот похожие...*'
-	button1 = 'Оценить заведение'
-	button2 = 'Проверить'
-	button3 = 'Советы при ЧС'
-	reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]], resize_keyboard=True)
-	update.message.reply_text(text=text, parse_mode='markdown', reply_markup=reply_markup)
+	PLACES_VARIANT = Users.getUser(chat_id)['PLACES_VARIANT']
+	if update.message.text not in [x[0] for x in PLACES_VARIANT]:
+		Users.addComment(chat_id, update.message.text)
 
-	# -----------Update User Activity--------------
-	Users.update_last_activity(chat_id)
+		# mark generate
+		answers = Users.getUser(chat_id)['ANSWERS']
+		ans = list(map(lambda x: 1 if x == 'yes' else 0 if x == 'idn' else 0 ,answers))
+		mark = 100*sum(ans)//len(ans)
+
+		text = f'*Спасибо вам за отзыв!\n\nОценка места по вашим ответам равна {mark} баллов*'
+		button1 = 'Оценить заведение'
+		button2 = 'Проверить'
+		button3 = 'Советы при ЧС'
+		reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]], resize_keyboard=True)
+		update.message.reply_text(text=text, parse_mode='markdown', reply_markup=reply_markup)
+
+		# -----------Update User Activity--------------
+		Users.update_last_activity(chat_id)
 
 def change_lang(update, context):
 	question_text = '*Выбери язык:*'

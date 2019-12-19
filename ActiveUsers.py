@@ -1,4 +1,5 @@
 import time 
+from Database.TwinklyDb import *
 
 class Users():
 	def __init__(self):
@@ -8,14 +9,15 @@ class Users():
 		return self.__user_list
 
 	# add new user
-	def addUser(self, chat_id, name):
+	def addUser(self, chat_id, first_name, last_name, username, language):
+		User.addNewUser(chat_id, first_name=first_name, last_name=last_name, username=username, language=language)
 		if self.getUser(chat_id) == False:
 			self.__user_list.append({
 				'chat_id': chat_id, 
-				'name': name, 
+				'name': first_name, 
 				'status': False, 
 				'PLACES_VARIANT':[], 
-				'USER_PLACE':'', 
+				'USER_PLACE':'',
 				'ANSWERS':[], 
 				'QUESTIONS':[], 
 				'ACTIVE_QUESTION': 0,
@@ -24,7 +26,6 @@ class Users():
 				})
 		else:
 			return False
-
 
 	def getOldUsers(self):
 		res = []
@@ -62,8 +63,17 @@ class Users():
 	def changeUserPlace(self, chat_id, USER_PLACE):
 		for x in self.__user_list:
 			if x['chat_id'] == chat_id:
-				QUESTIONS = ['Ты пацан?', 'Завтра утром ты будешь кушать кашу?', 'У тебя собака есть?', 'Ты умный парень?']
-				x.update({'USER_PLACE': USER_PLACE, 'PLACES_VARIANT': [], 'QUESTIONS': QUESTIONS})
+				# print('change user place')
+				x.update({'USER_PLACE': USER_PLACE, 'PLACES_VARIANT': []})
+
+				# get questions from DB
+				form = Form.getForm(x['USER_PLACE'][2])[0]
+				questions = Question.getQuestions(form.questions, 'UA')
+				QUESTIONS = [q.content for q in questions]
+
+				x.update({'QUESTIONS': QUESTIONS})
+
+				
 				
 
 	# change variant of place
@@ -77,13 +87,6 @@ class Users():
 		for x in self.__user_list:
 			if x['chat_id'] == chat_id:
 				x['ANSWERS'].append(answer)
-				# try:
-				# 	if  x['ACTIVE_QUESTION']+1 == len(x['QUESTIONS']):
-				# 		x['ACTIVE_QUESTION'] = 'comment'
-				# 	else:
-				# 		x['ACTIVE_QUESTION'] += 1
-				# except Exception as e:
-				# 	print('BLABLA ERROR: bug that i not fixed (^_^) ')
 
 	def uppActiveQuestion(self, chat_id):
 		for x in self.__user_list:
@@ -97,6 +100,19 @@ class Users():
 		for x in self.__user_list:
 			if x['chat_id'] == chat_id:
 				x.update({'ACTIVE_QUESTION': '', 'COMMENT': text})
+				# send answers and comment to DB
+				answers = x['ANSWERS']
+				location = x['USER_PLACE'][1] #lat lon
+				typ = x['USER_PLACE'][2] #type of place
+
+				questions = Form.getForm(typ)[0].questions
+				comment = text
+				ans = list(map(lambda x: 1 if x == 'yes' else 0 if x == 'idn' else 0 ,answers))
+				# print(ans)
+				# print(questions)
+				# print(dict(zip(questions, answers)))
+				Review.addReview(chat_id, json.dumps(dict(zip(questions, ans))), typ,location[0], location[1],'--', 'Org', comment, 100*sum(ans)//len(ans))
+				# print(f"review by {chat_id} submitted successfully")
 
 
 if __name__ == '__main__':
