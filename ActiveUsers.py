@@ -16,6 +16,7 @@ class Users():
 				'chat_id': chat_id, 
 				'name': first_name, 
 				'status': False, 
+				'language': User.getUserLang(chat_id),
 				'PLACES_VARIANT':[], 
 				'USER_PLACE':'',
 				'ANSWERS':[], 
@@ -27,10 +28,19 @@ class Users():
 		else:
 			return False
 
+	# To change language
+	def change_language(self, chat_id, language):
+		for x in self.__user_list:
+			if x['chat_id'] == chat_id:
+				# save language change
+				x.update({'language': language})	
+				User.setUserLang(chat_id, language)
+
+	# Get users that offline more then 30min
 	def getOldUsers(self):
 		res = []
 		for i, x in enumerate(self.__user_list):
-			if time.time()-x['LAST_ACTIVE'] >= 1800:  #change to 1600 (30min)
+			if time.time()-x['LAST_ACTIVE'] >= 1600:  
 				res.append(x['chat_id'])
 		return res
 
@@ -104,15 +114,13 @@ class Users():
 				answers = x['ANSWERS']
 				location = x['USER_PLACE'][1] #lat lon
 				typ = x['USER_PLACE'][2] #type of place
+				place_id = x['USER_PLACE'][3] #place_id
 
+				# send to DB
 				questions = Form.getForm(typ)[0].questions
 				comment = text
 				ans = list(map(lambda x: 1 if x == 'yes' else 0 if x == 'idn' else 0 ,answers))
-				# print(ans)
-				# print(questions)
-				# print(dict(zip(questions, answers)))
-				Review.addReview(chat_id, json.dumps(dict(zip(questions, ans))), typ,location[0], location[1],'--', 'Org', comment, 100*sum(ans)//len(ans))
-				# print(f"review by {chat_id} submitted successfully")
+				Review.addReview(chat_id, json.dumps(dict(zip(questions, ans))), typ,location[0], location[1], place_id, 'Org', comment, 100*sum(ans)//len(ans) )
 
 
 if __name__ == '__main__':

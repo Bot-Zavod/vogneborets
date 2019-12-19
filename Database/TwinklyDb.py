@@ -77,6 +77,24 @@ class User:
             SQL(',').join(map(sql.Literal, [self.chat_id, lat, lon])), sql.Literal(lat), sql.Literal(lon),
         )
         run_query_nofetch(stmt)
+
+    @classmethod
+    def setUserLang(cls, chat_id, lang):
+        stmt = SQL('UPDATE "Users" SET language = {} WHERE chat_id = {}').format(
+            sql.Literal(lang),sql.Literal(chat_id),
+        )
+        run_query_nofetch(stmt)
+
+    @classmethod
+    def getUserLang(cls, chat_id):
+        stmt = SQL('SELECT language FROM "Users" WHERE chat_id = {}').format(
+            sql.Literal(chat_id),
+        )
+        try:
+            result = run_query(stmt)[0][0]
+            return result
+        except Exception as e:
+            return 'en'
         
 
 class Form:
@@ -186,12 +204,20 @@ class Review:
         return(int(result[0][0]))
 
     @classmethod
-    def getComments(cls, id):
-        stmt = SQL('SELECT comment FROM "Reviews" WHERE adr = {} ORDER BY submit_time DESC LIMIT 3;').format(sql.Literal(id))
+    def getComments(cls, place_id,chat_id):
+        stmt = SQL('SELECT comment FROM "Reviews" WHERE adr = {} and chat_id != {} ORDER BY submit_time DESC LIMIT 3;').format(sql.Literal(place_id), sql.Literal(chat_id))
         result = run_query(stmt)
         if len(result) == 0:
-        	return []
-        return([msg[0] for msg in result], cls.getMark(id))
+        	return ([],cls.getMark(place_id))
+        return([msg[0] for msg in result], cls.getMark(place_id))
+
+    @classmethod
+    def isReviewEstimate(cls, place_id, chat_id):
+        stmt = SQL('SELECT COUNT(*) FROM "Reviews" WHERE adr = {} and chat_id = {} and current_date - submit_time::date > 7;').format(
+            sql.Literal(place_id), sql.Literal(chat_id)
+        )
+        result = run_query(stmt)
+        return True if len(result) == 0 else False 
     
 
 #EXAMPLES
@@ -216,4 +242,7 @@ class Review:
 # for q in questions:
 #     print (q)
 # print(Review.getMark('--'))
-# print(Review.getComments('--'))
+# print(Review.getComments('--', 100500))
+# # print(Review.isReviewEstimate('ChIJg8PGGlzUhg4RDMUagWtgV6E', 383327735))
+# User.setUserLang(384341805, 'ru')
+# print(User.getUserLang(384341805))

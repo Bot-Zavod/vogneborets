@@ -31,6 +31,7 @@ thread.start()
 
 # Texts to bot
 
+
 # start message
 def start_command(update, context):	
 	first_name = update.message.chat.first_name
@@ -99,7 +100,7 @@ def check_location(update, context):
 		PLACES_VARIANT = []
 		for x in res:
 			buttons.append([x['name']])
-			PLACES_VARIANT.append( (x['name'], x['loc'], x['typ']) )
+			PLACES_VARIANT.append( (x['name'], x['loc'], x['typ'], x['place_id']) )
 
 		reply_markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 		text = '*В каком именно заведении вы находитесь?*'
@@ -149,8 +150,9 @@ def place_find_output(update, context):
 		logger.info("User %s: ask '%s' place info.", chat_id, Users.getUser(chat_id)['USER_PLACE'])
 
 		# get texts
-		place_id = '--'
-		nn_reviews, mark = Review.getComments(place_id)
+		place_id = Users.getUser(chat_id)['USER_PLACE'][3]
+		print(place_id, chat_id)
+		nn_reviews, mark = Review.getComments(place_id, chat_id)
 		reviews = '\n\n'.join(nn_reviews)
 		text = f"Вот все, что у меня есть про это место: { Users.getUser(chat_id)['USER_PLACE'][0] }\n*Оценка равна: {mark}*\n\n{reviews}"
 		update.message.reply_text(text=text, parse_mode='markdown')
@@ -161,7 +163,8 @@ def place_find_output(update, context):
 # True mode--- lets estimate place
 def place_estimation(update, context):
 	chat_id = update.message.chat.id
-	if Users.getUser(chat_id) and Users.getUser(chat_id)['status'] and Users.getUser(chat_id)['ACTIVE_QUESTION'] != '':
+	place_id = Users.getUser(chat_id)['USER_PLACE'][3]
+	if Users.getUser(chat_id) and Users.getUser(chat_id)['status'] and Users.getUser(chat_id)['ACTIVE_QUESTION'] != '' and Review.isReviewEstimate(place_id, chat_id):
 		logger.info("User %s: started estimate '%s' place ", chat_id, Users.getUser(chat_id)['USER_PLACE'])
 		text = f"*Давай оценим: { Users.getUser(chat_id)['USER_PLACE'][0] }*\n\nОтветь на вопросы ниже!"
 		update.message.reply_text(text=text, parse_mode='markdown')
@@ -173,7 +176,7 @@ def place_estimation(update, context):
 		question(update, context, question_text)
 
 	else:
-		text = "*Вы уже оценивали это место!*"
+		text = "*Вы уже оценивали это место!*\n\n*Оценивать место можно только раз в неделю!*"
 		update.message.reply_text(text=text, parse_mode='markdown')
 
 	# -----------Update User Activity--------------
@@ -238,13 +241,26 @@ def check_comment(update, context):
 		# -----------Update User Activity--------------
 		Users.update_last_activity(chat_id)
 
-def change_lang(update, context):
+
+
+# FOR CHANGE LANGUAGE
+def change_language(update, context):
+	first_name = update.message.chat.first_name
+	last_name = update.message.chat.last_name
+	username = update.message.chat.username
+	language = update._effective_user.language_code
+	chat_id = update.message.chat.id
+	# Add user to Session if he absent
+	if Users.getUser(chat_id) == False:
+		Users.addUser(chat_id, first_name, last_name, username, language)
+
 	question_text = '*Выбери язык:*'
 	button1 = InlineKeyboardButton('Русский 🇷🇺', callback_data='ru')
 	button2 = InlineKeyboardButton('Украинский 🇺🇦', callback_data='ua')
 	button3 = InlineKeyboardButton('English 🇺🇸', callback_data='en')
 	keyboard = InlineKeyboardMarkup([[button1], [button2], [button3]])
 
+	logger.info("User %s: send /change_language ", chat_id)
 	update.message.reply_text(text=question_text, parse_mode='markdown', reply_markup=keyboard)
 
 def select_lang(update, context):
@@ -252,6 +268,8 @@ def select_lang(update, context):
 	context.bot.delete_message(query.chat.id, query.message_id)
 	text = 'Хороший выбор!'
 	update.callback_query.message.reply_text(text=text, parse_mode='markdown')
+	Users.change_language(query.chat.id, update.callback_query.data)
+	logger.info("User %s: changed language to '%s' ", query.chat.id, update.callback_query.data)
 
 
 if __name__ == "__main__":
@@ -265,7 +283,7 @@ if __name__ == "__main__":
 	dispatcher.add_handler(CommandHandler('test', test))
 
 	# change language
-	dispatcher.add_handler(CommandHandler('change_lang', change_lang))
+	dispatcher.add_handler(CommandHandler('change_language', change_language))
 
 	# Instructions and Tips
 	dispatcher.add_handler(MessageHandler(Filters.regex('^Советы при ЧС$'), Instructions))

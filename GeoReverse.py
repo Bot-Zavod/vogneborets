@@ -35,7 +35,7 @@ def CoordinatesToAdress(coordinates):
                 typ = output0['results'][ad]['types'][0]
                 typ = find_type(typ)
                 place_id = output0['results'][0]['place_id']
-                adress.append({'name':name, 'adr':adr, 'typ': typ, 'loc':(lat,lng), 'id':place_id})
+                adress.append({'name':name, 'adr':adr, 'typ': typ, 'loc':(lat,lng), 'place_id':place_id})
     else:
         raise Exception('No company')
 
@@ -54,11 +54,8 @@ def CoordinatesToAdress(coordinates):
             lat = output['results'][0]['geometry']['location']['lat']
             lng = output['results'][0]['geometry']['location']['lng']
             place_id = output['results'][0]['place_id']
-            adress.append({'name': adr, 'adr':adr, 'typ': 6, 'loc':(lat,lng), 'id':place_id})
-    else:
-        raise Exception('No such adress')
-   
-   
+            adress.append({'name': adr, 'adr':adr, 'typ': 6, 'loc':(lat,lng), 'place_id':place_id})
+
     # for i in adress:
     #     print(i)
     return adress
@@ -88,5 +85,6 @@ if __name__ == "__main__":
     a = CoordinatesToAdress("46.4853906,30.7250282")
     for x in a:
         print(x['typ'],"\t",x['name'],"\t",x['id'])
-    # CoordinatesToAdress("46.48402859999999,30.737146")
-    # print(AdressToCoordinates("Нежинская 39"))
+    CoordinatesToAdress("46.48402859999999,30.737146")
+    print(AdressToCoordinates("Нежинская 39"))
+
