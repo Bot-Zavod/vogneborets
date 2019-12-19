@@ -6,7 +6,7 @@ from time import sleep
 from ActiveUsers import *
 import logging
 import threading 
-
+import json
 
 
 # LOGSLOGSLOGS
@@ -29,7 +29,15 @@ def autodeleting():
 thread = threading.Thread(target=autodeleting)
 thread.start()
 
+
+
+# -------------------JSON TEXTS HERE--------------------------
+# TEXTS
 # Texts to bot
+# json_file = open(, 'r')
+# text_data = json.load('Texts.json')
+# ---------------------------------------------
+
 
 
 # start message
@@ -41,19 +49,28 @@ def start_command(update, context):
 	chat_id = update.message.chat.id
 	sticker = "CAADAgAD_iAAAulVBRgi4A0qOPfBBRYE"
 
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
 	# Check user mode for correct menu
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
+
 		text = f"*Добрый день, {first_name}!*\n\nРады вас видеть! Выберите действие из меню ниже."
 		button1 = 'Оценить заведение'
 		button2 = 'Проверить'
 		button3 = 'Советы при ЧС'
+
 		reply_markup = ReplyKeyboardMarkup([[button1],[button2],[button3]], resize_keyboard=True)
 	else:
 		# add new User
 		Users.addUser(chat_id, first_name, last_name, username, language)
+
 		text = f"*Добрый день, {first_name}!*\n\nОтправьте нам свое местоположение, тоб мы могли провести оценку места"
 		location_button_text = "Отправить местоположение"
 		button = 'Советы при ЧС'
+
 		location_button = KeyboardButton(text=location_button_text, request_location = True)
 		reply_markup = ReplyKeyboardMarkup([[location_button],[button]], resize_keyboard=True)
 	
@@ -71,6 +88,12 @@ def Instructions(update, context):
 	username = update.message.chat.username
 	language = update._effective_user.language_code
 	chat_id = update.message.chat.id
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
 	# add User if he is absent, return False if absent
 	Users.addUser(chat_id, first_name, last_name, username, language)
 	logger.info("User %s: ask instructions", update.message.chat.id)
@@ -94,6 +117,11 @@ def check_location(update, context):
 	res = CoordinatesToAdress(str(lat)+','+str(lon))
 	# add User if he is absent, return False if absent
 	Users.addUser(chat_id, first_name, last_name, username, language)
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
 
 	if len(res) > 0:
 		buttons = []
@@ -126,6 +154,11 @@ def submit_location(update, context):
 	msg = update.effective_message.text
 	PLACES_VARIANT = Users.getUser(chat_id)['PLACES_VARIANT']
 
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
 	# check user mode and correct it
 	if msg in [x[0] for x in PLACES_VARIANT] and Users.getUser(chat_id)['status']==False:		
 		Users.changeUserStatus(chat_id, True)
@@ -146,6 +179,12 @@ def submit_location(update, context):
 # True mode--- place info
 def place_find_output(update, context):
 	chat_id = update.message.chat.id
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status']:
 		logger.info("User %s: ask '%s' place info.", chat_id, Users.getUser(chat_id)['USER_PLACE'])
 
@@ -164,6 +203,12 @@ def place_find_output(update, context):
 def place_estimation(update, context):
 	chat_id = update.message.chat.id
 	place_id = Users.getUser(chat_id)['USER_PLACE'][3]
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
 	if Users.getUser(chat_id) and Users.getUser(chat_id)['status'] and Users.getUser(chat_id)['ACTIVE_QUESTION'] != '' and Review.isReviewEstimate(place_id, chat_id):
 		logger.info("User %s: started estimate '%s' place ", chat_id, Users.getUser(chat_id)['USER_PLACE'])
 		text = f"*Давай оценим: { Users.getUser(chat_id)['USER_PLACE'][0] }*\n\nОтветь на вопросы ниже!"
@@ -188,6 +233,13 @@ def question(update, context, question_text):
 		update = update.callback_query
 	
 	chat_id = update.message.chat.id
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
+
 	button1 = InlineKeyboardButton('Да ✅', callback_data='yes')
 	button2 = InlineKeyboardButton('Нет ❌', callback_data='no')
 	button3 = InlineKeyboardButton('Не знаю ❔', callback_data='idn')
@@ -208,6 +260,12 @@ def answer(update, context):
 	Users.addAnswer(chat_id, query.data)
 	ACTIVE_QUESTION = Users.getUser(chat_id)['ACTIVE_QUESTION']
 
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
+
 	if ACTIVE_QUESTION == 'comment':
 		dispatcher.add_handler(MessageHandler(Filters.text, check_comment))
 		text = '*Оставьте комментарий!*'
@@ -223,6 +281,12 @@ def answer(update, context):
 def check_comment(update, context):
 	chat_id = update.message.chat.id
 	PLACES_VARIANT = Users.getUser(chat_id)['PLACES_VARIANT']
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
 	if update.message.text not in [x[0] for x in PLACES_VARIANT]:
 		Users.addComment(chat_id, update.message.text)
 
@@ -250,6 +314,12 @@ def change_language(update, context):
 	username = update.message.chat.username
 	language = update._effective_user.language_code
 	chat_id = update.message.chat.id
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+
 	# Add user to Session if he absent
 	if Users.getUser(chat_id) == False:
 		Users.addUser(chat_id, first_name, last_name, username, language)
@@ -266,7 +336,13 @@ def change_language(update, context):
 def select_lang(update, context):
 	query = update.callback_query.message
 	context.bot.delete_message(query.chat.id, query.message_id)
-	text = 'Хороший выбор!'
+
+	# USER LANGUAGE -------------------------------------
+	SESSION_LANGUAGE = Users.getUser(query.chat.id)['language']
+	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
+	# ---------------------------------------------------
+	
+	text = f'*{update.callback_query.data}*'
 	update.callback_query.message.reply_text(text=text, parse_mode='markdown')
 	Users.change_language(query.chat.id, update.callback_query.data)
 	logger.info("User %s: changed language to '%s' ", query.chat.id, update.callback_query.data)

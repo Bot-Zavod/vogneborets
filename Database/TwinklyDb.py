@@ -213,11 +213,12 @@ class Review:
 
     @classmethod
     def isReviewEstimate(cls, place_id, chat_id):
-        stmt = SQL('SELECT COUNT(*) FROM "Reviews" WHERE adr = {} and chat_id = {} and current_date - submit_time::date > 7;').format(
+        stmt = SQL('SELECT COUNT(*) FROM "Reviews" WHERE adr = {} and chat_id = {} and current_date - submit_time::date < 7;').format(
             sql.Literal(place_id), sql.Literal(chat_id)
         )
         result = run_query(stmt)
-        return True if len(result) == 0 else False 
+        print(result)
+        return True if len(result) == 0 or result[0][0] == 0 else False 
     
 
 #EXAMPLES
@@ -243,6 +244,6 @@ class Review:
 #     print (q)
 # print(Review.getMark('--'))
 # print(Review.getComments('--', 100500))
-# # print(Review.isReviewEstimate('ChIJg8PGGlzUhg4RDMUagWtgV6E', 383327735))
+# print(Review.isReviewEstimate('ChIJg8PGGlzUhg4RDMUagWtgV6E', 516233921))
 # User.setUserLang(384341805, 'ru')
 # print(User.getUserLang(384341805))
