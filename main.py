@@ -50,7 +50,7 @@ def start_command(update, context):
 	sticker = "CAADAgAD_iAAAulVBRgi4A0qOPfBBRYE"
 
 	# USER LANGUAGE -------------------------------------
-	SESSION_LANGUAGE = Users.getUser(chat_id)['language']
+	# SESSION_LANGUAGE = Users.getUser(chat_id)['language']
 	# EXAMPLES: json_data[SESSION_LANGUAGE]['button1_text'] 
 	# ---------------------------------------------------
 
