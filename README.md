@@ -1,1 +1,3 @@
-# TwinklyBot
+# Twinkly
+
+Twinkly Telegram bot
