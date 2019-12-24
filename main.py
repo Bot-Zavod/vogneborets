@@ -19,6 +19,9 @@ def start_state(update, context):
     update.message.reply_text(text=txt,parse_mode='markdown')
     update.message.reply_text(text=etc.text["send_loc"], reply_markup=reply_markup, parse_mode='markdown')
 
+def help_state(update, context):
+    update.message.reply_text(text=etc.text['help'])
+
 def usual_state(update, context):
     loc_button = KeyboardButton(text=etc.text["check"], request_location = True)
     buttons = [[loc_button], [etc.text["advise"]]]
@@ -71,6 +74,7 @@ def mark_text(comments,i,user):
     message = final+str(avgmark)+"/100\n\n"+etc.text["com"]
     for cmt in comments:
         message = message + cmt + '\n'
+    message = message + etc.text["link"]
     return message
 
 def loc_info_state(update, context):
@@ -168,6 +172,7 @@ if __name__ == "__main__":
 
     # Commands
     dispatcher.add_handler(CommandHandler('start', start_state))
+    dispatcher.add_handler(CommandHandler('help', help_state))
     # Location
     dispatcher.add_handler(MessageHandler(Filters.location, location_state))
     # Messages
