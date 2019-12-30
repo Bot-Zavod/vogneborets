@@ -3,20 +3,22 @@ from contextlib import closing
 from psycopg2.extras import DictCursor
 from psycopg2.sql import SQL 
 from psycopg2 import sql
-import credentials
+from init import connectDB
 import json
 
 def run_query(stmt):
-    with closing(psycopg2.connect(dbname=credentials.dbname, user=credentials.user, password=credentials.password, host=credentials.host, port=credentials.port)) as conn:
+    dbname, user, password, host, port = connectDB()
+    with closing(psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)) as conn:
         with conn.cursor() as cursor:
             cursor.execute(stmt)
             conn.commit()
             return cursor.fetchall()
 
 def run_query_nofetch(stmt):
-    with closing(psycopg2.connect(dbname=credentials.dbname, user=credentials.user, password=credentials.password, host=credentials.host, port=credentials.port)) as conn:
+    dbname, user, password, host, port = connectDB()
+    with closing(psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)) as conn:
         with conn.cursor() as cursor:
-        	# ETO NE PRAVILNO NO POX
+        	# ETO NE PRAVILNO NO poidet!
         	try:
 	            cursor.execute(stmt)
 	            conn.commit()  
@@ -131,7 +133,7 @@ class Review:
 #EXAMPLES
 
 # User.addNewUser(100500, 'Testname', 'TestLastName','chat','unmae')
-# print(User.getUser(123123)[0].checkLocation())
+# print(User.getUser(100500)[0].checkLocation())
 # print(User.getUser(100500)[0].updateLocation(100, 500))
 # print(User.getUser(100500))
 # print(Form.getForm(1))
