@@ -1,5 +1,5 @@
 
-bot_token = '850462457:AAHRS7lOavs3VgD7_PR-QqcXXSkhnYT8Kho',
+bot_token = '956104213:AAEKyKUNvfcA3MTcuxSE2_VrDebwoF2s0cI',
 	
 def MapInitialize():
     key = 'AIzaSyBrQmgLCVlaxO4hGtPlJAzeXE8U7xdufWQ'
