@@ -2,7 +2,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from GeoReverse import CoordinatesToAdress
 from TwinklyDb import *
-from init import bot_token
+from init import *
 from users import UserManager, User
 import logging
 import threading
@@ -234,7 +234,7 @@ def submit_review(update, context):
 if __name__ == "__main__":
     # Initialized BOT
     UM = UserManager()
-    updater = Updater(token = '850462457:AAHRS7lOavs3VgD7_PR-QqcXXSkhnYT8Kho', use_context=True)
+    updater = Updater(token = bot_token, use_context=True)
     dispatcher = updater.dispatcher
 
     # Commands
