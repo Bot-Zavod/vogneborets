@@ -3,11 +3,11 @@ from contextlib import closing
 from psycopg2.extras import DictCursor
 from psycopg2.sql import SQL 
 from psycopg2 import sql
-from init import connectDB
 import json
+from os import environ
 
 def run_query(stmt):
-    dbname, user, password, host, port = connectDB()
+    dbname, user, password, host, port = environ['db_name'], environ['db_user'], environ['db_password'], environ['db_host'], int(environ['db_port'])
     with closing(psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)) as conn:
         with conn.cursor() as cursor:
             cursor.execute(stmt)

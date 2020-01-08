@@ -2,11 +2,15 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Conve
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from GeoReverse import CoordinatesToAdress
 from TwinklyDb import *
-from init import *
+import init
 from users import UserManager, User
 import logging
 import threading
 import etc
+from os import environ
+
+# Passing all needed secure data to enviromental variables
+init.init()
 
 # LOGSLOGSLOGS
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -234,7 +238,7 @@ def submit_review(update, context):
 if __name__ == "__main__":
     # Initialized BOT
     UM = UserManager()
-    updater = Updater(token = bot_token, use_context=True)
+    updater = Updater(token = environ['bot_token'], use_context=True)
     dispatcher = updater.dispatcher
 
     # Commands

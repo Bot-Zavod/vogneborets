@@ -1,7 +1,8 @@
 from json import loads
 from urllib.parse import quote_plus
-from init import MapInitialize
 from requests import get
+from os import environ
+
 # This module will help you while working
 # with adresses and coordinates using google maps api
 
@@ -21,7 +22,7 @@ def find_type(typ):
 def CoordinatesToAdress(coordinates):
     # This function accept coordinates like "30.714546,46.380251" and returs list of possible adresses
     # getting the key from init module
-    key = MapInitialize()
+    key = environ['google_key']
     coordinates = str(coordinates[0])+','+str(coordinates[1])
     link0 ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+coordinates+"&language=ru&radius=30&key="+key
     # print(link0)
@@ -73,7 +74,7 @@ def CoordinatesToAdress(coordinates):
 def AdressToCoordinates(adress):
     # This function accept possible adress like "Дерибасовская Макдональдс"
     # and returs list with the right adress and its coordinates
-    key = MapInitialize()
+    key = environ['google_key']
     #adress should be splitted with + and url encoded
     adress = adress.replace(" ","+")
     adress = quote_plus(adress)
