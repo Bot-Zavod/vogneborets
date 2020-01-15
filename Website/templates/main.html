@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vogneborets</title>
+    {{"decoupled-map"|googlemap_js(37.4419, -122.1419, varname="decoupledmap", markers=[(37.4419, -122.1419)])}}
+    {{twmap.js}}
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+
+<!-- Nav bar -->
+<nav class="navbar navbar-expand-lg navbar-dark static-top bg-warning">
+    <div class="container">
+        <a class="navbar-brand" href="/"><h2 class="">Vogneborets</h2>
+<!--           <img src="/static/logo.png" height="80" width="80">
+ -->        </a>
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse row justify-content-end" id="navbarCollapse" style="">
+          
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/team" style="font-size: 20px">Про нас</a>
+            </li>
+            <li class="nav-item mx-3">
+              <a class="nav-link btn btn-info text-white" href="https://telegram.me/groupname" style="font-size: 20px">Telegram</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-danger text-white" href="#" style="font-size: 20px">Пiдтримати проект</a>
+            </li>
+          </ul>
+          
+        </div>
+    </div>
+</nav>
+
+<!-- Page content -->
+<div class="container">
+
+    <header class="masthead text-white text-center">
+    <div class="rox align-items-left">
+        {{twmap.html}}
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="mt-5 col-xl-9 mx-auto">
+            <div class="input-group input-group-lg ">
+              <input type="text" class="form-control" placeholder="Введите название места" aria-label="place" aria-describedby="button-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-outline-light bg-white text-muted" type="button" id="button-addon2">Поиск</button>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    </header>
+
+</div>
+
+
+
+</body>
+</html>
