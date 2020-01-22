@@ -62,4 +62,4 @@ def about_us():
     return render_template('about_us.html')
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=True, host= '0.0.0.0')
+    app.run(debug=True, use_reloader=True, host= '0.0.0.0', port=8080)
