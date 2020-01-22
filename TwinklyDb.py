@@ -5,6 +5,7 @@ from psycopg2.sql import SQL
 from psycopg2 import sql
 import json
 from os import environ
+import init
 
 def run_query(stmt):
     dbname, user, password, host, port = environ['db_name'], environ['db_user'], environ['db_password'], environ['db_host'], int(environ['db_port'])
@@ -15,7 +16,7 @@ def run_query(stmt):
             return cursor.fetchall()
 
 def run_query_nofetch(stmt):
-    dbname, user, password, host, port = connectDB()
+    dbname, user, password, host, port = environ['db_name'], environ['db_user'], environ['db_password'], environ['db_host'], int(environ['db_port'])
     with closing(psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)) as conn:
         with conn.cursor() as cursor:
         	# ETO NE PRAVILNO NO poidet!
@@ -128,8 +129,7 @@ class Review:
             if len(result) == 0:
                 return []
             return([msg[0] for msg in result])
-    
-
+            
 #EXAMPLES
 
 # User.addNewUser(100500, 'Testname', 'TestLastName','chat','unmae')

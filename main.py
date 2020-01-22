@@ -229,12 +229,6 @@ def submit_review(update, context):
     UM.delete_user(user.chat_id)
     usual_state(update, context)
 
-
-
-
-
-
-
 if __name__ == "__main__":
     # Initialized BOT
     UM = UserManager()
@@ -259,7 +253,7 @@ if __name__ == "__main__":
     dispatcher.add_handler(CallbackQueryHandler(user_info, pattern='^(info)$'))
 
     # REGex   
-    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text['mark']), loc_save_state))    	
+    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text['mark']), loc_save_state))    	 
     dispatcher.add_handler(MessageHandler(Filters.regex(etc.text['stat']), loc_info_state))
 
     updater.start_polling()

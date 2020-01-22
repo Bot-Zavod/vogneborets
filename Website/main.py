@@ -3,18 +3,22 @@
 from flask import Flask, render_template, request, redirect
 from flask_googlemaps import GoogleMaps
 from flask_googlemaps import Map, icons
-
+import stripe
 from TwinklyDb import *
 
 app = Flask(__name__, template_folder="templates")
+
+pub_key = 'pk_test_3LtOdozoRiUg6rH7Jtn5k8tR008gczBxTM'
+secret_key = 'sk_test_6pYkFEXMF33C1y8ldLrS1wi50006quKVd3'
+
+stripe.api_key = secret_key
 
 # you can set key as config
 app.config['GOOGLEMAPS_KEY'] = "AIzaSyBTfQk2e0_GziHCnrhHYcVituFAWEgBIuQ"
 
 # you can also pass key here
 GoogleMaps(
-    app,
-    #key="AIzaSyDP0GX-Wsui9TSDxtFNj2XuKrh7JBTPCnU"
+    app
 )
 
 # NOTE: this example is using a form to get the apikey
@@ -63,15 +67,28 @@ def mapview():
 def about_us():
     return render_template('about_us.html')
 
+@app.route("/donate")
+def donate():
+    return render_template('donate.html')
 
-@app.route('/clickpost/', methods=['POST'])
-def clickpost():
-    # Now lat and lon can be accessed as:
-    lat = request.form['lat']
-    lng = request.form['lng']
-    print(lat)
-    print(lng)
-    return "ok"
+@app.route("/donate/<amount>")
+def donate_post_amount(amount):
+    amount = int(amount)
+    return render_template('donate_amount.html', amount = amount)
+
+@app.route('/pay', methods=['POST'])
+def pay():
+    print('Token:' + request.form['stripeToken'])
+    customer = stripe.Customer.create(source=request.form['stripeToken'])
+
+    charge = stripe.Charge.create(
+        customer=customer.id,
+        amount=int(request.form['amount']),
+        currency='uah',
+        description='The Product'
+    )
+
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True, host= '0.0.0.0')

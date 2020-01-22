@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vogneborets</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='form.css') }}" data-rel-css="" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='form-.css') }}" data-rel-css="" />
+</head>
+<body>
+
+<!-- Nav bar -->
+<nav class="navbar navbar-expand-lg navbar-dark static-top bg-warning">
+    <div class="container">
+        <a class="navbar-brand" href="/"><h2 class="">Vogneborets</h2></a>
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse row justify-content-end" id="navbarCollapse" style="">
+          
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/team" style="font-size: 20px">Про нас</a>
+            </li>
+            <li class="nav-item mx-3">
+              <a class="nav-link btn btn-info text-white" href="https://telegram.me/groupname" style="font-size: 20px">Telegram</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-danger text-white" href="#" style="font-size: 20px">Пiдтримати проект</a>
+            </li>
+          </ul>
+          
+        </div>
+    </div>
+</nav>
+
+<div id="card-element">
+  <!-- Elements will create input elements here -->
+</div>
+
+<!-- We'll put the error messages in this element -->
+<div id="card-errors" role="alert"></div>
+
+<button id="submit">Pay</button>
+
+<script src="{{ url_for('static', filename='form.js') }}" data-rel-js></script>
+</body>
+</html>
