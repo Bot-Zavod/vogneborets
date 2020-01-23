@@ -4,7 +4,6 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-agency/blob/master/LICENSE)
  */
 /*services*/
-mainNav
 
 body {
   overflow-x: hidden;
@@ -12,6 +11,8 @@ body {
 }
 
 p {
+  font-size: 20px;
+  text-indent: 20px;
   line-height: 1.75;
 }
 
@@ -49,10 +50,10 @@ h6 {
 }
 
 .page-section h3.section-subheading {
-  font-size: 16px;
+  font-size: 25px;
   font-weight: 400;
-  font-style: italic;
   margin-bottom: 75px;
+  margin-top: 3rem!important;
   text-transform: none;
   font-family: 'Droid Serif', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
@@ -111,7 +112,11 @@ img::-moz-selection {
 }
 
 #mainNav {
-  background-color: #efc581;
+  background-color: #000000;
+}
+
+#logo {
+  size: 12px;
 }
 
 #mainNav .navbar-toggler {
@@ -121,14 +126,14 @@ img::-moz-selection {
   text-transform: uppercase;
   color: white;
   border: 0;
-  background-color: #fed136;
+  background-color: #d36900;
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
 /*Main logo*/
 #mainNav .navbar-brand {
   color: white;
-  /*font-family: 'Kaushan Script', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';*/
+  font-size: 30px;
 }
 
 #mainNav .navbar-brand.active, #mainNav .navbar-brand:active, #mainNav .navbar-brand:focus, #mainNav .navbar-brand:hover {
@@ -177,6 +182,7 @@ img::-moz-selection {
 header.masthead {
   text-align: center;
   color: white;
+  height: 100vh;
   background-image: url("../img/header-bg.jpg");
   background-repeat: no-repeat;
   background-attachment: scroll;

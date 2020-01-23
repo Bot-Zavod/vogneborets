@@ -36,24 +36,18 @@ def updateReviews():
 def mapview():
     print('called')
     markers = updateReviews()
-    print(len(markers))
     twmap = Map(
         identifier="twmap",
         varname="twmap",
         cls='',
         style=(
-            "height:100%;"
-            "width:100%;"
-            # "top:100%;"
-            # "left:0;"
-            # "position:absolute;"
-            # "z-index:200;"
+             "width: 100%;"
+             "height: 100vh;" 
         ),
         lat=46.44,
         lng=30.75,
         zoom = 15,
         markers=markers,
-        fit_markers_to_bounds=True
     )
 
     return render_template(

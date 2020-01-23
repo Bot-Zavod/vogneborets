@@ -12,6 +12,7 @@
 
   <!-- Bootstrap core CSS -->
   <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  {{twmap.js}}
   <!-- Custom fonts for this template -->
   <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
@@ -27,19 +28,23 @@
 <body id="page-top">
 
   <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="Nav">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
     <div class="container">
-      <a class="navbar-brand">
-        <img src="/static/img/logo.png" width="40" height="40" alt="10">
-      </a>
-      <a class="navbar-brand js-scroll-trigger" href="#page-top"><h4>Vogneborets</h4></a>
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-      </button>
+
+
+	      <!-- <a class="navbar-brand h4 js-scroll-trigger" href="#page-top">Vogneborets</a> -->
+
+
+        <a class="navbar-brand h4 js-scroll-trigger" href="#page-top"><img src="/static/img/lg2.png" height="50" /></a>
+
+	      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+	        Menu
+	        <i class="fas fa-bars"></i>
+	      </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav text-uppercase ml-auto">
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="/map">Мапа</a>
+            <a class="nav-link js-scroll-trigger" href="#map">Мапа</a>
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#about">Детальнiше</a>
@@ -56,14 +61,22 @@
   <header class="masthead">
     <div class="container">
       <div class="intro-text">
-        <div class="intro-heading">Привіт!</br>Я проект Vogneborets</div>
+        <div class="intro-heading">Привіт!</br>Я - проект Vogneborets</div>
         <div class="intro-lead-in">Моя мета – зробити публічні простори та заклади максимально безпечними, а людей – максимально свідомими щодо пожежної безпеки місць, в яких вони перебувають.</div>
         <div class="intro-lead-in">На мапі ти можеш переглянути рейтинг пожежної безпеки за оцінками відвідувачів, а за цим посиланням – оцінити заклад самостійно. </div>
-        <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="/map">До мапи</a>
-        <a class="btn btn-info btn-xl text-uppercase js-scroll-trigger mx-4" href="https://t.me/vognebot">Оцiнити <img class="img-fluid" src="/static/img/tg_logo.png" width="30" height="30" alt=""></a>
-      </div>
-    </div>
+	        <div class="mt-7">
+		        <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#map">До мапи</a>
+			    <a class="btn btn-info btn-xl text-uppercase js-scroll-trigger" href="https://t.me/vognebot">Оцiнити</a>
+			</div>
+	      </div>
+	    </div>
   </header> 
+
+<!-- Map -->
+<section class="page-section" id="map">
+   	   <div>{{twmap.html}}</div>
+</section>
+
 
 <!-- About -->
 <section class="page-section mt-5" id="about">
@@ -72,12 +85,12 @@
       <div class="row">
 	        <div class="col-lg-12 text-center">
 	          <h2 class="section-heading text-uppercase mt-3">Чому це потрібно? </h2>
-	          <h3 class="blockquote text-center">Кожного дня виникає 275 пожеж, матеріальні втрати від яких складають 30 млн 165 тис. грн.
+	          <h3 class="blockquote text-center mt-5">Кожного дня виникає 275 пожеж, матеріальні втрати від яких складають 30 млн 165 тис. грн.
 	          </br>Внаслідок пожеж гине 5 і отримує травми 4 людини, 
 	      	  </br>вогнем знищуються або пошкоджується 72 будівлі (споруди) та 13 одиниць техніки.</h3>
 	        </div>
       </div>
-      <div class="row">
+      <div class="row mt-5">
 	        <div class="col-lg-12">
 	          <ul class="timeline">
 		            <li>
@@ -121,14 +134,14 @@
 		              </div>
 		            </li>
             </ul>
-            <p>Можна шукати виних і вимагати їх звільнення, але ми продовжуємо щодня працювати та відпочивати у приміщеннях, де не дотримуються правила пожежної безпеки.</p>
-          </br><hr>
-            <p class="text-center"><b>А можна вже зараз обирати безпечні простори і заклади для себе та своєї сім'ї, допомагати робити ці заклада більш безпечними.</b></p>
-          <hr></br>
-            <p>Ми розробили <a href = "https://t.me/vognebot">телеграм-бот "Vogneborets"</a>, за допомогою якого можна перевірити, наскільки є безпечною твоя улюблена кав'ярня чи кінотеатр, дитячий садочок чи школа, куди ходять діти, місце роботи чи відпочинку.</p>
-            <p>Наша мета – дати кожній людині можливість зрозуміти, наскільки безпечним є заклад або простір.</p>
-            <p>Про заклади та просторів, які будуть мати мінімальних рейтинг, ми будемо повідомляти органи влади. Однак ми би хотіли, аби оцінки стали орієнтирами для менеджерів та власників публічних просторів та закладів для покращення систем протипожежної безпеки.в одному місці інформацію для відвідувачів закладів: що робити під час пожежі, де пройти курс пожежної підготовки, про першу домедичну допомогу тощо.</p>
-            
+
+            <p class="text-center mt-5">Можна шукати виних і вимагати їх звільнення, але ми продовжуємо щодня працювати та відпочивати у приміщеннях, де не дотримуються правила пожежної безпеки.</p>
+              </br><hr>
+                <p class="text-center mb-5" style="font-size: 25px;"><b>А можна вже зараз обирати безпечні простори і заклади для себе та своєї сім'ї, допомагати робити ці заклада більш безпечними.</b></p>
+              <hr></br>
+                <p>Ми розробили <a href = "https://t.me/vognebot">телеграм-бот "Vogneborets"</a>, за допомогою якого можна перевірити, наскільки є безпечною твоя улюблена кав'ярня чи кінотеатр, дитячий садочок чи школа, куди ходять діти, місце роботи чи відпочинку.</p>
+                <p>Наша мета – дати кожній людині можливість зрозуміти, наскільки безпечним є заклад або простір.</p>
+                <p>Про заклади та просторів, які будуть мати мінімальних рейтинг, ми будемо повідомляти органи влади. Однак ми би хотіли, аби оцінки стали орієнтирами для менеджерів та власників публічних просторів та закладів для покращення систем протипожежної безпеки.в одному місці інформацію для відвідувачів закладів: що робити під час пожежі, де пройти курс пожежної підготовки, про першу домедичну допомогу тощо.</p>
 	        </div>
       </div>
       <hr>
@@ -142,13 +155,13 @@
 			  </br><b>6.</b> Все! Твоя оцінка закладу буде нанесена на мапу протягом 10 хвилин.
 				</br></br><hr>
 		  </h3>
-      	<p class="text-center text-muted">
-	      	<b>Оцінка пожежної безпеки – це можливість зробити заклади безпечнішими, а не метод покарання чи нечесної конкуренції. Ми підтримаємо підприємців, у яких витримано правила пожежної безпеки та тих, хто покращили її.</b>
-	    </p>
-      </br><b>Ми шукаємо партнерів й друзів по всій Україні. У перспективі ми б хотіли:</b>
-      <ul>
-			<li>зібрати в одному місці корисну інформацію для підприємців та управлінців: що і як вони можуть покращити у своєму закладі та де можуть отримати професійні консультації, купити якісні засоби пожежної безпеки тощо;
-			<li>зібрати в одному місці інформацію для відвідувачів закладів: що робити під час пожежі, де пройти курс пожежної підготовки, про першу домедичну допомогу тощо.
+        	<p class="text-center">
+  	      	<p class="text-center mb-5" style="font-size: 25px;"><b>Оцінка пожежної безпеки – це можливість зробити заклади безпечнішими, а не метод покарання чи нечесної конкуренції. Ми підтримаємо підприємців, у яких витримано правила пожежної безпеки та тих, хто покращили її.</b></p>
+  	    </p>
+        </br><p>Ми шукаємо партнерів й друзів по всій Україні. У перспективі ми б хотіли:<p>
+        <ul>
+  			<li><p>зібрати в одному місці корисну інформацію для підприємців та управлінців: що і як вони можуть покращити у своєму закладі та де можуть отримати професійні консультації, купити якісні засоби пожежної безпеки тощо;</p></li>
+  			<li><p>зібрати в одному місці інформацію для відвідувачів закладів: що робити під час пожежі, де пройти курс пожежної підготовки, про першу домедичну допомогу тощо.</p></li>
       </ul>
     </div>
 	  </br></br><hr>
@@ -161,9 +174,8 @@
 <section class="bg-light page-section mt-5" id="team">
     <div class="container">
       <div class="row">
-        <div class="col-lg-12 text-center mt-5">
-          <h2 class="section-heading text-uppercase">Наша неймовiрна команда</h2>
-          <h3 class="section-subheading text-muted">Найвирiшальнiшi та найсильнiшi.</h3>
+        <div class="col-lg-12 text-center mt-5 mb-4">
+          <h2 class="section-heading text-uppercase">Наша команда</h2>
         </div>
       </div>
       <!-- 1 -->
@@ -172,24 +184,7 @@
           <div class="team-member">
             <img class="mx-auto rounded-circle" src="/static/img/team/Slavsk.jpg" alt="">
             <h4>Олександр Славський </h4>
-            <p class="text-muted">Ініціатор та ідейний засновник проекту</p>
-            <ul class="list-inline social-buttons">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
+            <p class="text-muted">Ініціатор та ідейний засновник проекту</p>           
           </div>
         </div>
         <div class="col-sm-3">
@@ -197,23 +192,6 @@
             <img class="mx-auto rounded-circle" src="/static/img/team/Marin.jpg" alt="">
             <h4>Марина Мрук</h4>
             <p class="text-muted">Менеджер проекту</p>
-            <ul class="list-inline social-buttons">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
     </div>
@@ -223,72 +201,18 @@
           <div class="team-member">
             <img class="mx-auto rounded-circle" src="/static/img/team/Vlad.jpg" alt="">
             <h4>Владислав Піотровський</h4>
-            <p class="text-muted">Technical lead, Python dev</p>
-            <ul class="list-inline social-buttons  mt-2">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
         <div class="col-sm-4">
           <div class="team-member">
             <img class="mx-auto rounded-circle" src="/static/img/team/Andrew.jpg" alt="">
             <h4>Андрій  Майдан</h4>
-            <p class="text-muted">Dev OPS, Software Architect</p>
-            <ul class="list-inline social-buttons mt-2">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
         <div class="col-sm-4">
           <div class="team-member">
             <img class="mx-auto rounded-circle" src="/static/img/team/Alex.jpg" alt="">
             <h4>Олексій Марковський</h4>
-            <p class="text-muted">Web, Python Developer</p>
-            <ul class="list-inline social-buttons mt-2">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
     </div>
@@ -299,23 +223,6 @@
             <img class="mx-auto rounded-circle" src="/static/img/team/Mich.jpg" alt="">
             <h4>Михайло Келембет</h4>
             <p class="text-muted">Консультант з пожежної безпеки</p>
-            <ul class="list-inline social-buttons  mt-2">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
         <div class="col-sm-4">
@@ -323,23 +230,6 @@
             <img class="mx-auto rounded-circle" src="/static/img/team/Maks.jpg" alt="">
             <h4>Максим Зубенко</h4>
             <p class="text-muted">Консультант з маркетингу та дизайну</p>
-            <ul class="list-inline social-buttons mt-2">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
         <div class="col-sm-4">
@@ -347,23 +237,6 @@
             <img class="mx-auto rounded-circle" src="/static/img/team/Liza.jpg" alt="">
             <h4>Єлизавета Зубенко</h4>
             <p class="text-muted">Дизайнер</p>
-            <ul class="list-inline social-buttons mt-2">
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
     </div>
@@ -372,119 +245,36 @@
     <hr>
 </section>
 
-  <!-- Clients -->
-<!--   <section class="py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 col-sm-6">
-          <a href="#">
-            <img class="img-fluid d-block mx-auto" src="/static/img/logos/envato.jpg" alt="">
-          </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <a href="#">
-            <img class="img-fluid d-block mx-auto" src="/static/img/logos/designmodo.jpg" alt="">
-          </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <a href="#">
-            <img class="img-fluid d-block mx-auto" src="/static/img/logos/themeforest.jpg" alt="">
-          </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <a href="#">
-            <img class="img-fluid d-block mx-auto" src="/static/img/logos/creative-market.jpg" alt="">
-          </a>
-        </div>
-      </div>
-    </div>
-  </section> -->
 
-  <!-- Contact -->
-  <section class="page-section" id="contact">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12 text-center mt-2">
-          <h2 class="section-heading text-uppercase">Зв'яжіться з нами</h2>
-<!--           <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
- -->        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <form id="contactForm" name="sentMessage" novalidate="novalidate">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <input class="form-control" id="name" type="text" placeholder="Ваше ім'я *" required="required" data-validation-required-message="Введіть своє ім’я.">
-                  <p class="help-block text-danger"></p>
-                </div>
-                <div class="form-group">
-                  <input class="form-control" id="email" type="email" placeholder="Ваш емейл *" required="required" data-validation-required-message="Введіть свою електронну адресу.">
-                  <p class="help-block text-danger"></p>
-                </div>
-                <div class="form-group">
-                  <input class="form-control" id="phone" type="tel" placeholder="Ваш телефон *" required="required" data-validation-required-message="Введіть свій номер телефону.">
-                  <p class="help-block text-danger"></p>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <textarea class="form-control" id="message" placeholder="Ваше повідомлення *" required="required" data-validation-required-message="Будь ласка, введіть повідомлення."></textarea>
-                  <p class="help-block text-danger"></p>
-                </div>
-              </div>
-              <div class="clearfix"></div>
-              <div class="col-lg-12 text-center">
-                <div id="success"></div>
-                <button id="sendMessageButton" class="btn btn-primary btn-xl text-uppercase mb-4" type="submit">Надіслати повідомлення</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
+
+
 
   <!-- Footer -->
-<!--   <footer class="footer">
+  <footer class="footer">
     <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-4">
-          <span class="copyright">Copyright &copy; Your Website 2019</span>
-        </div>
-        <div class="col-md-4">
+      <div class="align-items-center">
+        <div class="">
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
-              <a href="#">
-                <i class="fab fa-twitter"></i>
+              <a href="https://t.me/vognebot">
+                <i class="fab fa-telegram"></i>
               </a>
             </li>
             <li class="list-inline-item">
-              <a href="#">
+              <a href="/">
                 <i class="fab fa-facebook-f"></i>
               </a>
             </li>
             <li class="list-inline-item">
-              <a href="#">
-                <i class="fab fa-linkedin-in"></i>
+              <a href="/">
+                <i class="fab fa-instagram"></i>
               </a>
             </li>
           </ul>
         </div>
-        <div class="col-md-4">
-          <ul class="list-inline quicklinks">
-            <li class="list-inline-item">
-              <a href="#">Privacy Policy</a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#">Terms of Use</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+       </div>
     </div>
   </footer>
- -->
  
 
   <!-- Bootstrap core JavaScript -->
