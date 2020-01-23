@@ -84,7 +84,7 @@ class Review:
 
     column_names = ['chat_id', 'q_json', 'form_id', 'lat', 'lon', 'adr', 'place', 'comment', 'mark']
     
-    def __init__(self, user_id, q_json, form_id, lat, lon, adr, place, comment, mark, review_id = None):
+    def __init__(self, chat_id, q_json, form_id, lat, lon, adr, place, comment, mark, review_id = None):
         self.chat_id = chat_id
         self.q_json = q_json
         self.form_id = form_id
