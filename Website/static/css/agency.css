@@ -16,7 +16,7 @@ p {
 }
 
 a {
-  color: #ff8100;
+  color: #d36900;
 }
 
 a:hover {
@@ -24,7 +24,7 @@ a:hover {
 }
 
 .text-primary {
-  color: #fed136 !important;
+  color: #e66a37!important;
 }
 
 
@@ -96,8 +96,8 @@ img::-moz-selection {
 }
 
 .btn-primary {
-  background-color: #fed136;
-  border-color: #fed136;
+  background-color: #e66a37;
+  border-color: #e66a37;
 }
 
 .btn-primary:active, .btn-primary:focus, .btn-primary:hover {

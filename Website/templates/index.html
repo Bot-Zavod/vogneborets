@@ -29,7 +29,10 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="Nav">
     <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top"><h3>👩‍🚒 Vogneborets</h3></a>
+      <a class="navbar-brand" href="#">
+        <img src="/static/img/logo.png" width="60" height="60" alt="">
+      </a>
+      <a class="navbar-brand js-scroll-trigger" href="#page-top"><h3>Vogneborets</h3></a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
@@ -57,21 +60,11 @@
         <div class="intro-heading">Привіт!</br>Я проект Vogneborets</div>
         <div class="intro-lead-in">Моя мета – зробити публічні простори та заклади максимально безпечними, а людей – максимально свідомими щодо пожежної безпеки місць, в яких вони перебувають.</div>
         <div class="intro-lead-in">На мапі ти можеш переглянути рейтинг пожежної безпеки за оцінками відвідувачів, а за цим посиланням – оцінити заклад самостійно. </div>
-        <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#map">До мапи</a>
-        <a class="btn btn-info btn-xl text-uppercase js-scroll-trigger mx-4" href="https://t.me/firesafety_bot">Оцiнити</a>
+        <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="/map">До мапи</a>
+        <a class="btn btn-info btn-xl text-uppercase js-scroll-trigger mx-4" href="https://t.me/vognebot">Оцiнити <img class="img-fluid" src="/static/img/tg_logo.png" width="30" height="30" alt=""></a>
       </div>
     </div>
-  </header>
-
-  <!-- Map -->
-  <div class="container">
-  <section class="page-section" id="map">
-     <!-- Here should be a map -->
-     {{ twmap.html }}
-  </section>
-  </div>
-
- 
+  </header> 
 
 <!-- About -->
 <section class="page-section mt-5" id="about">
