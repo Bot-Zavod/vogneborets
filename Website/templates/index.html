@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Vogneborets</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <!-- Custom fonts for this template -->
+  <link href="/static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+
+  <!-- Custom styles for this template -->
+  <link href="/static/css/agency.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="Nav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top"><h3>👩‍🚒 Vogneborets</h3></a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav text-uppercase ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="/map">Мапа</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#about">Детальнiше</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#team">Команда</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="masthead">
+    <div class="container">
+      <div class="intro-text">
+        <div class="intro-heading">Привіт!</br>Я проект Vogneborets</div>
+        <div class="intro-lead-in">Моя мета – зробити публічні простори та заклади максимально безпечними, а людей – максимально свідомими щодо пожежної безпеки місць, в яких вони перебувають.</div>
+        <div class="intro-lead-in">На мапі ти можеш переглянути рейтинг пожежної безпеки за оцінками відвідувачів, а за цим посиланням – оцінити заклад самостійно. </div>
+        <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#map">До мапи</a>
+        <a class="btn btn-info btn-xl text-uppercase js-scroll-trigger mx-4" href="https://t.me/firesafety_bot">Оцiнити</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Map -->
+  <div class="container">
+  <section class="page-section" id="map">
+     <!-- Here should be a map -->
+     {{ twmap.html }}
+  </section>
+  </div>
+
+ 
+
+<!-- About -->
+<section class="page-section mt-5" id="about">
+    <div class="container">
+      <hr>
+      <div class="row">
+	        <div class="col-lg-12 text-center">
+	          <h2 class="section-heading text-uppercase mt-3">Чому це потрібно? </h2>
+	          <h3 class="blockquote text-center">Кожного дня виникає 275 пожеж, матеріальні втрати від яких складають 30 млн 165 тис. грн.
+	          </br>Внаслідок пожеж гине 5 і отримує травми 4 людини, 
+	      	  </br>вогнем знищуються або пошкоджується 72 будівлі (споруди) та 13 одиниць техніки.</h3>
+	        </div>
+      </div>
+      <div class="row">
+	        <div class="col-lg-12">
+	          <ul class="timeline">
+		            <li>
+		              <div class="timeline-image">
+		                <img class="rounded-circle img-fluid" src="/static/img/about/1.jpg" alt="">
+		              </div>
+		              <div class="timeline-panel">
+		                <div class="timeline-heading">
+		                  <h4>Червень 2019</h4>
+		                  <!-- <h4 class="subheading">Our Humble Beginnings</h4> -->
+		                </div>
+		                <div class="timeline-body">
+		                  <p class="text-muted">8 людей під час пожежі в Одеській психологічній лікарні у червні;</p>
+		                </div>
+		              </div>
+		            </li>
+		            <li class="timeline-inverted">
+		              <div class="timeline-image">
+		                <img class="rounded-circle img-fluid" src="/static/img/about/2.jpg" alt="">
+		              </div>
+		              <div class="timeline-panel">
+		                <div class="timeline-heading">
+		                  <h4>Серпень 2019</h4>
+		                </div>
+		                <div class="timeline-body">
+		                  <p class="text-muted">9 людей під час пожежі в готелі «Токіо Стар» у серпні;</p>
+		                </div>
+		              </div>
+		            </li>
+		            <li>
+		              <div class="timeline-image">
+		                <img class="rounded-circle img-fluid" src="/static/img/about/3.jpg" alt="">
+		              </div>
+		              <div class="timeline-panel">
+		                <div class="timeline-heading">
+		                  <h4>Грудень 2019</h4>
+		                </div>
+		                <div class="timeline-body">
+		                  <p class="text-muted">16 людей під час пожежі у коледжі на Троїцькій у грудні.</p>
+		                </div>
+		              </div>
+		            </li>
+	          </ul>
+	        </div>
+      </div>
+      <hr>
+      <div class="col-lg-12 mt-4">
+          <h2 class="section-heading text-uppercase text-center mt-3">ЯК ЦЕ ПРАЦЮЄ?</h2>
+          <h3 class="section-subheading mt-4"><b>1.</b> Бот діє у мобільному додатку <b>Telegram</b>. Скачай його, якщо ще не маєте.
+			  </br><b>2.</b> Відкрий посилання <a href="https://t.me/firesafety_bot">https://t.me/firesafety_bot</a>.
+			  </br><b>3.</b> Надішли геолокацію та обери місце, яке бажаєш перевірити.
+			  </br><b>4.</b> Відповідай на 10-15 питань – це можливість зрозуміти, наскільки заклад безпечний.
+			  </br><b>5.</b>Можна залишити коментар про пожежну безпеку закладу, але це не є обов’язковим. 
+			  </br><b>6.</b>Все! Твоя оцінка закладу буде нанесена на мапу протягом 10 хвилин.
+				</br></br><hr>
+		  </h3>
+      	<p class="text-center text-muted">
+	      	<b>Оцінка пожежної безпеки – це можливість зробити заклади безпечнішими, а не метод покарання чи нечесної конкуренції. Ми підтримаємо підприємців, у яких витримано правила пожежної безпеки та тих, хто покращили її.</b>
+	    </p>
+			</br><b>Ми шукаємо партнерів й друзів по всій Україні. У перспективі ми б хотіли:</b>
+			</br> - зібрати в одному місці корисну інформацію для підприємців та управлінців: що і як вони можуть покращити у своєму закладі та де можуть отримати професійні консультації, купити якісні засоби пожежної безпеки тощо;
+			</br> - зібрати в одному місці інформацію для відвідувачів закладів: що робити під час пожежі, де пройти курс пожежної підготовки, про першу домедичну допомогу тощо.
+      </div>
+	  </br></br><hr>
+</section>
+
+
+
+
+<!-- Team -->
+<section class="bg-light page-section mt-5" id="team">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center mt-5">
+          <h2 class="section-heading text-uppercase">Наша неймовiрна команда</h2>
+          <h3 class="section-subheading text-muted">Найвирiшальнiшi та найсильнiшi.</h3>
+        </div>
+      </div>
+      <!-- 1 -->
+    <div class="row">
+        <div class="col-sm-7">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Slavsk.jpg" alt="">
+            <h4>Олександр Славський </h4>
+            <p class="text-muted">Ініціатор та ідейний засновник проекту</p>
+            <ul class="list-inline social-buttons">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Marin.jpg" alt="">
+            <h4>Марина Мрук</h4>
+            <p class="text-muted">Менеджер проекту</p>
+            <ul class="list-inline social-buttons">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+      <!-- 2 -->
+    <div class="row">
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Vlad.jpg" alt="">
+            <h4>Владислав Піотровський</h4>
+            <ul class="list-inline social-buttons  mt-2">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Andrew.jpg" alt="">
+            <h4>Андрій  Майдан</h4>
+            <ul class="list-inline social-buttons mt-2">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Alex.jpg" alt="">
+            <h4>Олексій Марковський</h4>
+            <ul class="list-inline social-buttons mt-2">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+      <!-- 3 -->
+    <div class="row">
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Mich.jpg" alt="">
+            <h4>Михайло Келембет</h4>
+            <p class="text-muted">Консультант з пожежної безпеки</p>
+            <ul class="list-inline social-buttons  mt-2">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Maks.jpg" alt="">
+            <h4>Максим Зубенко</h4>
+            <p class="text-muted">Консультант з маркетингу та дизайну</p>
+            <ul class="list-inline social-buttons mt-2">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="/static/img/team/Liza.jpg" alt="">
+            <h4>Єлизавета Зубенко</h4>
+            <p class="text-muted">Дизайнер</p>
+            <ul class="list-inline social-buttons mt-2">
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+
+    </div>
+    <hr>
+</section>
+
+  <!-- Clients -->
+<!--   <section class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <a href="#">
+            <img class="img-fluid d-block mx-auto" src="/static/img/logos/envato.jpg" alt="">
+          </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <a href="#">
+            <img class="img-fluid d-block mx-auto" src="/static/img/logos/designmodo.jpg" alt="">
+          </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <a href="#">
+            <img class="img-fluid d-block mx-auto" src="/static/img/logos/themeforest.jpg" alt="">
+          </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <a href="#">
+            <img class="img-fluid d-block mx-auto" src="/static/img/logos/creative-market.jpg" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Contact -->
+  <section class="page-section" id="contact">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center mt-2">
+          <h2 class="section-heading text-uppercase">Зв'яжіться з нами</h2>
+<!--           <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+ -->        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <form id="contactForm" name="sentMessage" novalidate="novalidate">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input class="form-control" id="name" type="text" placeholder="Ваше ім'я *" required="required" data-validation-required-message="Введіть своє ім’я.">
+                  <p class="help-block text-danger"></p>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" id="email" type="email" placeholder="Ваш емейл *" required="required" data-validation-required-message="Введіть свою електронну адресу.">
+                  <p class="help-block text-danger"></p>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" id="phone" type="tel" placeholder="Ваш телефон *" required="required" data-validation-required-message="Введіть свій номер телефону.">
+                  <p class="help-block text-danger"></p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <textarea class="form-control" id="message" placeholder="Ваше повідомлення *" required="required" data-validation-required-message="Будь ласка, введіть повідомлення."></textarea>
+                  <p class="help-block text-danger"></p>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="col-lg-12 text-center">
+                <div id="success"></div>
+                <button id="sendMessageButton" class="btn btn-primary btn-xl text-uppercase mb-4" type="submit">Надіслати повідомлення</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+<!--   <footer class="footer">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <span class="copyright">Copyright &copy; Your Website 2019</span>
+        </div>
+        <div class="col-md-4">
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a href="#">
+                <i class="fab fa-twitter"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <ul class="list-inline quicklinks">
+            <li class="list-inline-item">
+              <a href="#">Privacy Policy</a>
+            </li>
+            <li class="list-inline-item">
+              <a href="#">Terms of Use</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+ -->
+ 
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="/static/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="/static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Contact form JavaScript -->
+  <script src="/static/js/jqBootstrapValidation.js"></script>
+  <script src="/static/js/contact_me.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="/static/js/agency.min.js"></script>
+
+</body>
+
+</html>
