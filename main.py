@@ -6,8 +6,8 @@ import init
 from users import UserManager, User
 import logging
 import threading
-import etc
-from os import environ
+import etc  
+from os import environ,getcwd,listdir
 
 # Passing all needed secure data to enviromental variables
 init.init()
@@ -21,18 +21,38 @@ def start_state(update, context):
 	# Create User
     UM.create_user(User(update.message.chat.id,update.message.chat.username))
 
-    # Keyboard generate
-    loc_button = KeyboardButton(text=etc.text["check"], request_location = True)
-    reply_markup = ReplyKeyboardMarkup([[loc_button], [etc.text["advise"]]], resize_keyboard=True)
-
     # Message text
     text = etc.text["start_0"] + update.message.chat.first_name + etc.text["start_1"]
-
     # Sending message
-    update.message.reply_sticker(sticker=etc.sticker_twinkly)
+    # cwd = getcwd()
+    # files = listdir(cwd)  # Get all the files in that directory
+    # print("Files in %r: %s" % (cwd, files))
+
     update.message.reply_text(text=text,parse_mode='markdown')
-    update.message.reply_text(text=etc.text["send_loc"], reply_markup=reply_markup, parse_mode='markdown')
+    back_state(update, context)
     logger.info("User %s: send /start command", update.message.chat.id)
+
+
+
+def check_state(update, context):
+    reply_markup = ReplyKeyboardMarkup([[etc.text["go_check"]], [etc.text["back"]]], resize_keyboard=True)
+
+    update.message.reply_text(text=etc.text["check_info_1"], parse_mode='markdown')
+    update.message.reply_text(text=etc.text["check_info_2"], reply_markup=reply_markup, parse_mode='markdown')
+
+
+
+def go_check_state(update, context):
+    loc_button = KeyboardButton(text=etc.text["loc"], request_location = True)
+    reply_markup = ReplyKeyboardMarkup([[loc_button], [etc.text["back"]]], resize_keyboard=True)
+
+    update.message.reply_text(text=etc.text["send_loc"], reply_markup=reply_markup, parse_mode='markdown')
+
+
+# go to the main menu
+def back_state(update, context):
+    reply_markup = ReplyKeyboardMarkup([[etc.text["check"]], [etc.text["stat"]], [etc.text["advise"]], [etc.text["place"]]], resize_keyboard=True)
+    update.message.reply_text(text=etc.text["description"], reply_markup=reply_markup, parse_mode='markdown')
 
 
 
@@ -43,35 +63,22 @@ def help_state(update, context):
 
 
 
-def usual_state(update, context):
-	# Keyboard generate
-    loc_button = KeyboardButton(text=etc.text["check"], request_location = True)
-    reply_markup = ReplyKeyboardMarkup( [[loc_button], [etc.text["advise"]]], resize_keyboard=True)
-
-    # Sending message
-    update.message.reply_text(text=etc.text["usual"], reply_markup=reply_markup, parse_mode='markdown')
-
-
-
 def instruction_state(update, context):
 	# Sending message
-    update.message.reply_text(text=etc.text['safe'])
-    logger.info("User %s: ask instructions", update.message.chat.id)
+    reply_markup = ReplyKeyboardMarkup( [[etc.text["back"]]], resize_keyboard=True)
+    update.message.reply_text(text=etc.text['safe'], reply_markup=reply_markup, parse_mode='markdown')
 
 
 
-def action_select_state(update, context):
-    msg = update.effective_message.text
-    place = next(el for el in UM.currentUsers[update.message.chat.id].place if el['name'] == msg)
-    UM.currentUsers[update.message.chat.id].selectPlace(place)
+def info_state(update, context):
+    reply_markup = ReplyKeyboardMarkup( [[etc.text["back"]]], resize_keyboard=True)
+    update.message.reply_text(text=etc.text["link"], reply_markup=reply_markup, disable_web_page_preview=True, parse_mode='markdown')
 
-    # Keyboard generate
-    buttons = [[etc.text['mark']], [etc.text['stat']]]
-    reply_markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True, one_time_keyboard = False)
 
-    # Sending message
-    update.message.reply_text(text=etc.text['state'], reply_markup=reply_markup)
-    logger.info("User %s: select place %s", update.message.chat.id, place)
+# for owners of places
+def place_state(update, context):
+    reply_markup = ReplyKeyboardMarkup( [[etc.text["back"]]], resize_keyboard=True)
+    update.message.reply_text(text=etc.text["place_ok"], reply_markup=reply_markup, parse_mode='html')
 
 
 
@@ -87,7 +94,7 @@ def location_state(update, context):
 
     # Sending message if ZERO RESULTS
     if len(variants) == 0:
-    	 update.message.reply_text(text=etc.text['loc_none'], parse_mode='markdown')
+    	update.message.reply_text(text=etc.text['loc_none'], parse_mode='markdown')
 
     # Save variants for further selection
     UM.currentUsers[update.message.chat.id].selectPlace(variants)
@@ -99,13 +106,29 @@ def location_state(update, context):
     # Display markup keyboard
     buttons = [[el['name']] for el in variants]
     upd_button =[KeyboardButton(text=etc.text['no_adress'])]
-    reply_markup = ReplyKeyboardMarkup([upd_button, *buttons], resize_keyboard=True, one_time_keyboard = True)
+    reply_markup = ReplyKeyboardMarkup([*buttons, upd_button], resize_keyboard=True, one_time_keyboard = True)
 
     # Sending message
     update.message.reply_text(text=etc.text['clarification'], reply_markup=reply_markup)
 
 
 
+def action_select_state(update, context):
+    msg = update.effective_message.text
+    place = next(el for el in UM.currentUsers[update.message.chat.id].place if el['name'] == msg)
+    UM.currentUsers[update.message.chat.id].selectPlace(place)
+    place = UM.currentUsers[update.message.chat.id].place
+    questions = etc.all_types[place['typ']].copy()
+    UM.currentUsers[update.message.chat.id].addQuestions(questions)
+
+    # Sending message
+    update.message.reply_text(text=etc.text['test_start'], reply_markup=ReplyKeyboardRemove())
+    logger.info("User %s: start place estimate", update.message.chat.id)
+
+    ask_question(update, context)
+
+
+# in case there there is no valid location we propose to send a new one
 def no_adress(update, context):
 	# Sending message
     update.message.reply_text(text=etc.text['loc_none'], parse_mode='markdown')
@@ -113,8 +136,8 @@ def no_adress(update, context):
 
 
 
-def mark_text(comments, i, user):
-	final = { 0: tc.text["users"], 1: etc.text["users_stat"] }[i]
+def mark_text(update, comments, i, user):
+	final = { 0: etc.text["users"], 1: etc.text["users_stat"] }[i]
 
 	avgmark = Review.getMark(user.place['id'])
 	message = final+str(avgmark)+"/100\n\n"+etc.text["com"]
@@ -128,34 +151,6 @@ def mark_text(comments, i, user):
 
 
 
-def loc_info_state(update, context):
-    user = UM.currentUsers[update.message.chat.id]
-    comments = Review.getComments(user.place['id'], user.chat_id)
-    logger.info("User %s: ask place marks", update.message.chat.id)
-    
-    # Sending message
-    if len(comments) > 0:
-        message = mark_text(comments, 1, user)
-        context.bot.send_message(update.message.chat.id, text=message, parse_mode='markdown')
-    else:
-        context.bot.send_message(update.message.chat.id, text=etc.text['no_review'], parse_mode='markdown')
-
-
-
-def loc_save_state(update, context):
-    place = UM.currentUsers[update.message.chat.id].place
-    questions = etc.all_types[place['typ']].copy()
-    UM.currentUsers[update.message.chat.id].addQuestions(questions)
-
-    # Delete reply keyboard with start buttons
-    text = etc.text['test_start']
-    context.bot.send_message(update.message.chat.id, text=text, parse_mode='markdown', reply_markup=ReplyKeyboardRemove())
-    logger.info("User %s: start place estimate", update.message.chat.id)
-
-    ask_question(update, context)
-
-
-
 def ask_question(update, context):
     if update.callback_query:
         update = update.callback_query
@@ -165,7 +160,7 @@ def ask_question(update, context):
     button_n = InlineKeyboardButton(etc.text["no"], callback_data='no')
     button_idn = InlineKeyboardButton(etc.text["dk"], callback_data='idn')
     button_info = InlineKeyboardButton(etc.text["info"], callback_data='info')
-    keyboard = InlineKeyboardMarkup([[button_y, button_n],[button_idn,button_info]])
+    keyboard = InlineKeyboardMarkup([[button_y, button_n],[button_idn, button_info]])
 
     update.message.reply_text(text=etc.question[user.questions[0]], parse_mode='markdown', reply_markup=keyboard)
 
@@ -204,7 +199,7 @@ def user_info(update, context):
 
 def submit_review(update, context):
     user = UM.currentUsers[update.message.chat.id]
-    comment = '' if update.message.text == etc.text["cancel_comment"] else pdate.message.text
+    comment = '' if update.message.text == etc.text["cancel_comment"] else update.message.text
     questions = etc.all_types[user.place['typ']]
     real_answers=[]
 
@@ -219,15 +214,17 @@ def submit_review(update, context):
     Review.addReview(user.chat_id, json.dumps(user.answers), user.place['typ'], *user.location, user.place['id'], user.place['name'], comment, mark)
 
     # print submission success & display recent comments
-    context.bot.send_message(update.message.chat.id, text=etc.text["submit"]+str(mark)+'/100', parse_mode='markdown', reply_markup=ReplyKeyboardRemove())
-    comments = Review.getComments(user.place['id'], user.chat_id)
+    reply_markup = ReplyKeyboardMarkup( [[etc.text["back"]]], resize_keyboard=True)
+    context.bot.send_message(update.message.chat.id, text=etc.text["submit"]+str(mark)+'/100'+etc.text["submit_end"], parse_mode='markdown', reply_markup=reply_markup)
+    # comments = Review.getComments(user.place['id'], user.chat_id)
 
-    if len(comments) > 0:
-        message = mark_text(comments,0,user)
-        context.bot.send_message(update.message.chat.id, text=message, parse_mode='markdown', reply_markup=ReplyKeyboardRemove())
+    # if len(comments) > 0:
+    #     message = mark_text(update, comments,0,user)
+    #     context.bot.send_message(update.message.chat.id, text=message, parse_mode='markdown', reply_markup=ReplyKeyboardRemove())
 
     UM.delete_user(user.chat_id)
-    usual_state(update, context)
+
+
 
 if __name__ == "__main__":
     # Initialized BOT
@@ -241,20 +238,25 @@ if __name__ == "__main__":
     # help command
     dispatcher.add_handler(CommandHandler('help', help_state))
 
+    # place command
+    dispatcher.add_handler(CommandHandler('place', place_state))
+
+
     # Location handler
     dispatcher.add_handler(MessageHandler(Filters.location, location_state))
 
     # Messages
+    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text["check"]), check_state))
+    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text["go_check"]), go_check_state))
     dispatcher.add_handler(MessageHandler(Filters.regex(etc.text["advise"]), instruction_state))
+    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text["place"]), place_state))
+    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text["back"]), back_state))
     dispatcher.add_handler(MessageHandler(Filters.regex(etc.text["no_adress"]), no_adress))
+    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text['stat']), info_state))
 
     # Callback Queries
     dispatcher.add_handler(CallbackQueryHandler(user_answer, pattern='^(yes|no|idn)$'))
     dispatcher.add_handler(CallbackQueryHandler(user_info, pattern='^(info)$'))
-
-    # REGex   
-    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text['mark']), loc_save_state))    	 
-    dispatcher.add_handler(MessageHandler(Filters.regex(etc.text['stat']), loc_info_state))
 
     updater.start_polling()
     updater.idle()
