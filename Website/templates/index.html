@@ -22,6 +22,8 @@
 
   <!-- Custom styles for this template -->
   <link href="/static/css/agency.css" rel="stylesheet">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon-16x16.png">
+
 
 </head>
 
@@ -30,10 +32,11 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
     <div class="container">
-      <a class="navbar-brand" href="#">
-      <img src="/static/img/logo.png" width="45" height="45" alt="">
-      </a>
-	      <a class="navbar-brand js-scroll-trigger" href="#page-top"> <h2>Vogneborets</h2></a>
+
+
+	      <!-- <a class="navbar-brand h4 js-scroll-trigger" href="#page-top">Vogneborets</a> -->
+        <a class="navbar-brand js-scroll-trigger" href="#page-top"><img src="/static/img/lg2.png" id="logo-p"/></a>
+
 	      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 	        Menu
 	        <i class="fas fa-bars"></i>
@@ -61,10 +64,10 @@
         <div class="intro-heading">Привіт!</br>Я - проект Vogneborets</div>
         <div class="intro-lead-in">Моя мета – зробити публічні простори та заклади максимально безпечними, а людей – максимально свідомими щодо пожежної безпеки місць, в яких вони перебувають.</div>
         <div class="intro-lead-in">На мапі ти можеш переглянути рейтинг пожежної безпеки за оцінками відвідувачів, а за цим посиланням – оцінити заклад самостійно. </div>
-	        <div class="mt-7">
+	        <div class="mt-5" id="main-buttons">
 		        <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#map">До мапи</a>
-			    <a class="btn btn-info btn-xl text-uppercase js-scroll-trigger" href="https://t.me/vognebot">Оцiнити <img class="img-fluid" src="/static/img/tg_logo.png" width="25" height="25" alt=""></a>
-			</div>
+    			  <a class="btn btn-info btn-xl text-uppercase js-scroll-trigger" href="https://t.me/vognebot">Оцiнити</a>
+    			</div>
 	      </div>
 	    </div>
   </header> 
@@ -75,14 +78,13 @@
 </section>
 
 
-
 <!-- About -->
 <section class="page-section mt-5" id="about">
     <div class="container">
       <hr>
       <div class="row">
-	        <div class="col-lg-12 text-center">
-	          <h2 class="section-heading text-uppercase mt-3">Чому це потрібно? </h2>
+	        <div class="col-lg-12 text-center mt-5">
+	          <h2 class="section-heading text-uppercase mt-5">Чому це потрібно? </h2>
 	          <h3 class="blockquote text-center mt-5">Кожного дня виникає 275 пожеж, матеріальні втрати від яких складають 30 млн 165 тис. грн.
 	          </br>Внаслідок пожеж гине 5 і отримує травми 4 людини, 
 	      	  </br>вогнем знищуються або пошкоджується 72 будівлі (споруди) та 13 одиниць техніки.</h3>
@@ -145,18 +147,18 @@
       <hr>
       <div class="col-lg-12 mt-4">
           <h2 class="section-heading text-uppercase text-center mt-3">ЯК ЦЕ ПРАЦЮЄ?</h2>
-          <h3 class="section-subheading mt-4"><b>1.</b> Бот діє у мобільному додатку <b>Telegram</b>. Скачай його, якщо ще не маєте.
-			  </br><b>2.</b> Відкрий посилання <a href="https://t.me/vognebot">https://t.me/vognebot</a>.
-			  </br><b>3.</b> Надішли геолокацію та обери місце, яке бажаєш перевірити.
-			  </br><b>4.</b> Відповідай на 10-15 питань – це можливість зрозуміти, наскільки заклад безпечний.
-			  </br><b>5.</b> Можна залишити коментар про пожежну безпеку закладу, але це не є обов’язковим. 
-			  </br><b>6.</b> Все! Твоя оцінка закладу буде нанесена на мапу протягом 10 хвилин.
-				</br></br><hr>
-		  </h3>
+        <p><b>1.</b> Бот діє у мобільному додатку <b>Telegram</b>. Скачай його, якщо ще не маєте.</p>
+			  <p><b>2.</b> Відкрий посилання <a href="https://t.me/vognebot">https://t.me/vognebot</a>.<p>
+			  <p><b>3.</b> Надішли геолокацію та обери місце, яке бажаєш перевірити.</p>
+			  <p><b>4.</b> Відповідай на 10-15 питань – це можливість зрозуміти, наскільки заклад безпечний.</p>
+			  <p><b>5.</b> Можна залишити коментар про пожежну безпеку закладу, але це не є обов’язковим.</p>
+			  <p><b>6.</b> Все! Твоя оцінка закладу буде нанесена на мапу протягом 10 хвилин.</p>
+				<hr class="mt-5 mb-5">
+		  
         	<p class="text-center">
   	      	<p class="text-center mb-5" style="font-size: 25px;"><b>Оцінка пожежної безпеки – це можливість зробити заклади безпечнішими, а не метод покарання чи нечесної конкуренції. Ми підтримаємо підприємців, у яких витримано правила пожежної безпеки та тих, хто покращили її.</b></p>
   	    </p>
-        </br><p>Ми шукаємо партнерів й друзів по всій Україні. У перспективі ми б хотіли:<p>
+        </br><p class="text-uppercase">Ми шукаємо партнерів й друзів по всій Україні. У перспективі ми б хотіли:<p>
         <ul>
   			<li><p>зібрати в одному місці корисну інформацію для підприємців та управлінців: що і як вони можуть покращити у своєму закладі та де можуть отримати професійні консультації, купити якісні засоби пожежної безпеки тощо;</p></li>
   			<li><p>зібрати в одному місці інформацію для відвідувачів закладів: що робити під час пожежі, де пройти курс пожежної підготовки, про першу домедичну допомогу тощо.</p></li>
@@ -169,11 +171,11 @@
 
 
 <!-- Team -->
-<section class="bg-light page-section mt-5" id="team">
+<section class="bg-light page-section" id="team">
     <div class="container">
       <div class="row">
         <div class="col-lg-12 text-center mt-5 mb-4">
-          <h2 class="section-heading text-uppercase">Наша команда</h2>
+          <h2 class="section-heading text-uppercase mt-5">Наша команда</h2>
         </div>
       </div>
       <!-- 1 -->
@@ -199,21 +201,21 @@
           <div class="team-member">
             <img class="mx-auto rounded-circle" src="/static/img/team/Vlad.jpg" alt="">
             <h4>Владислав Піотровський</h4>
-            <p class="text-muted">Technical lead, Python dev</p>
+            <p class="text-muted">Technical lead</p>  
           </div>
         </div>
         <div class="col-sm-4">
           <div class="team-member">
             <img class="mx-auto rounded-circle" src="/static/img/team/Andrew.jpg" alt="">
             <h4>Андрій  Майдан</h4>
-            <p class="text-muted">Dev OPS, Software Architect</p>
+            <p class="text-muted">DevOps</p>  
           </div>
         </div>
         <div class="col-sm-4">
           <div class="team-member">
             <img class="mx-auto rounded-circle" src="/static/img/team/Alex.jpg" alt="">
             <h4>Олексій Марковський</h4>
-            <p class="text-muted">Web, Python Developer</p>
+            <p class="text-muted">Web developer</p>  
           </div>
         </div>
     </div>
@@ -264,11 +266,6 @@
             <li class="list-inline-item">
               <a href="/">
                 <i class="fab fa-facebook-f"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="/">
-                <i class="fab fa-instagram"></i>
               </a>
             </li>
           </ul>
