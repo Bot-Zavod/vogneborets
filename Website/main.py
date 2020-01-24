@@ -42,7 +42,7 @@ def mapview():
         cls='',
         style=(
              "width: 100%;"
-             "height: 100%vh" 
+             "height: 100vh" 
         ),
         lat=46.44,
         lng=30.75,
