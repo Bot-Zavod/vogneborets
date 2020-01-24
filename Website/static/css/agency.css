@@ -115,9 +115,9 @@ img::-moz-selection {
   background-color: #000000;
 }
 
-#logo {
-  size: 12px;
-}
+/*#logo-p {
+  height: 75px;
+}*/
 
 #mainNav .navbar-toggler {
   font-size: 12px;
@@ -133,7 +133,7 @@ img::-moz-selection {
 /*Main logo*/
 #mainNav .navbar-brand {
   color: white;
-  font-size: 30px;
+  font-size: 60px;
 }
 
 #mainNav .navbar-brand.active, #mainNav .navbar-brand:active, #mainNav .navbar-brand:focus, #mainNav .navbar-brand:hover {
@@ -162,7 +162,6 @@ img::-moz-selection {
     background-color: transparent;
   }
   #mainNav .navbar-brand {
-    font-size: 1.75em;
     transition: all 0.3s;
   }
   #mainNav .navbar-nav .nav-item .nav-link {
@@ -174,9 +173,12 @@ img::-moz-selection {
     background-color: #000000;
   }
   #mainNav.navbar-shrink .navbar-brand {
-    font-size: 1.25em;
-    padding: 12px 0;
+    font-size: 1.8em;
   }
+  #logo-p{
+    height: 2em;
+  }
+
 }
 
 header.masthead {
