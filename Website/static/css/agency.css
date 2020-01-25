@@ -123,9 +123,8 @@ img::-moz-selection {
 }
 
 #mainNav .navbar-toggler {
-  font-size: 12px;
-  right: 0;
-  padding: 20px;
+/*  font-size: 12px;
+*/  padding: 20px;
   margin-top: 25px;
   margin-right: 5vh; 
   text-transform: uppercase;
