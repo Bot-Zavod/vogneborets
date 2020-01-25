@@ -117,6 +117,7 @@ img::-moz-selection {
 #mainNav {
   background-color: #000000;
   padding-top: 0;
+  padding-bottom: 0;
 }
 
 #logo-p {
@@ -126,7 +127,7 @@ img::-moz-selection {
 #mainNav .navbar-toggler {
 /*  font-size: 12px;
 */  padding: 20px;
-  margin-top: 25px;
+  /*margin-top: 25px;*/
   /*margin-right: 5vh; */
   text-transform: uppercase;
   color: white;
@@ -189,7 +190,8 @@ img::-moz-selection {
 header.masthead {
   text-align: center;
   color: white;
-  height: 100vh;
+  height: 100%;
+  /*width: 100%;*/
   background-image: url("../img/header-bg.jpg");
   background-repeat: no-repeat;
   background-attachment: scroll;
