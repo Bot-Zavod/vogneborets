@@ -119,7 +119,7 @@ img::-moz-selection {
 }
 
 #logo-p {
-  height: 65px;
+  height: 7vh;
 }
 
 #mainNav .navbar-toggler {
@@ -127,7 +127,7 @@ img::-moz-selection {
   right: 0;
   padding: 20px;
   margin-top: 25px;
-  margin-right: 20px; 
+  margin-right: 5vh; 
   text-transform: uppercase;
   color: white;
   border: 0;
@@ -200,6 +200,8 @@ header.masthead {
 header.masthead .intro-text {
   padding-top: 20vh;
   padding-bottom: 20vh;
+  padding-right: 5vh;
+  padding-left: 0vh;
 }
 
 header.masthead .intro-text .intro-lead-in {
