@@ -199,7 +199,7 @@ header.masthead {
 header.masthead .intro-text {
   padding-top: 20vh;
   padding-bottom: 20vh;
-  padding-right: 5vh;
+  padding-right: 0vh;
   padding-left: 0vh;
 }
 
