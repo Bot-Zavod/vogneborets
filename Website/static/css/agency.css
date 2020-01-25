@@ -28,8 +28,8 @@ a:hover {
   color: #e66a37!important;
 }
 #main-buttons{
-  margin-right: 20px;
-}
+  
+  }
 
 h1,
 h2,
@@ -95,7 +95,7 @@ img::-moz-selection {
 
 .btn-xl {
   font-size: 18px;
-  padding: 20px 40px;
+  padding: 15px 30px;
 }
 
 .btn-primary {
@@ -126,11 +126,11 @@ img::-moz-selection {
 /*  font-size: 12px;
 */  padding: 20px;
   margin-top: 25px;
-  margin-right: 5vh; 
+  /*margin-right: 5vh; */
   text-transform: uppercase;
   color: white;
   border: 0;
-  background-color: #d36900;
+  background-color: #000000;
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
