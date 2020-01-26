@@ -39,7 +39,7 @@ def updateReviews():
 @app.route("/", methods=["GET", "POST"])
 def mapview():
     try:
-        host = request.environ['HTTP_X_FORWARDED_FOR']
+        host = request.environ['HTTP_X_FORWARDED_FOR'].split(',')[0]
         response = requests.get("http://ip-api.com/json/{}".format(host))
         print(host)
         js = response.json()
