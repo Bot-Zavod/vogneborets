@@ -47,12 +47,12 @@ def mapview():
         print(js['countryCode'])
         user_lat = js['lat']
         user_lng = js['lon']
-        zoom = 12
+        zoom = 10
     except Exception as e:
         print(e)
-        user_lat = 48.714646
+        user_lat = 49.114646
         user_lng = 31.131265
-        zoom = 8
+        zoom = 6.5
         print("Unknown Location")
     markers = updateReviews()
     twmap = Map(
