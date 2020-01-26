@@ -47,7 +47,7 @@ def mapview():
         print(js['countryCode'])
         user_lat = js['lat']
         user_lng = js['lon']
-        zoom = 16
+        zoom = 12
     except Exception as e:
         print(e)
         user_lat = 48.714646
