@@ -36,6 +36,7 @@ def updateReviews():
 def mapview():
     try:
         response = requests.get("http://ip-api.com/json/{}".format(request.remote_addr))
+        print(request.remote_addr)
         js = response.json()
         print(js['countryCode'])
         user_lat = js['lat']
