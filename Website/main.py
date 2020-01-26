@@ -6,6 +6,10 @@ from flask_googlemaps import Map, icons
 
 from TwinklyDb import *
 
+import requests
+
+
+
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
 # you can set key as config
@@ -38,12 +42,17 @@ def mapview():
         response = requests.get("http://ip-api.com/json/{}".format(request.remote_addr))
         print(request.remote_addr)
         js = response.json()
+        if js['status'] != "success":
+            raise Exception('COULD NOT DEFINE LOCATION')
         print(js['countryCode'])
         user_lat = js['lat']
         user_lng = js['lon']
-    except Exception:
-        user_lat = 46.44
-        user_lng = 30.75
+        zoom = 16
+    except Exception as e:
+        print(e)
+        user_lat = 48.714646
+        user_lng = 31.131265
+        zoom = 8
         print("Unknown Location")
     markers = updateReviews()
     twmap = Map(
@@ -56,7 +65,7 @@ def mapview():
         ),
         lat=user_lat,
         lng=user_lng,
-        zoom = 16,
+        zoom = zoom,
         markers=markers,
     )
 
