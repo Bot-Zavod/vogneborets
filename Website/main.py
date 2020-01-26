@@ -39,8 +39,9 @@ def updateReviews():
 @app.route("/", methods=["GET", "POST"])
 def mapview():
     try:
-        response = requests.get("http://ip-api.com/json/{}".format(request.remote_addr))
-        print(request.remote_addr)
+        host = request.environ['HTTP_X_FORWARDED_FOR']
+        response = requests.get("http://ip-api.com/json/{}".format(host))
+        print(host)
         js = response.json()
         if js['status'] != "success":
             raise Exception('COULD NOT DEFINE LOCATION')
