@@ -34,7 +34,16 @@ def updateReviews():
 
 @app.route("/", methods=["GET", "POST"])
 def mapview():
-    print('called')
+    try:
+        response = requests.get("http://ip-api.com/json/{}".format(ip_address))
+        js = response.json()
+        print(js['countryCode'])
+        user_lat = js['lat']
+        user_lng = js['lon']
+    except Exception:
+        user_lat = 46.44
+        user_lng = 30.75
+        print("Unknown Location")
     markers = updateReviews()
     twmap = Map(
         identifier="twmap",
@@ -44,9 +53,9 @@ def mapview():
              "width: 100%;"
              "height: 100vh;" 
         ),
-        lat=46.44,
-        lng=30.75,
-        zoom = 15,
+        lat=user_lat,
+        lng=user_lng,
+        zoom = 16,
         markers=markers,
     )
 
@@ -54,35 +63,6 @@ def mapview():
         'index.html',
         twmap=twmap,
     )
-
-@app.route("/map")
-def map():
-    markers = updateReviews()
-    print(len(markers))
-    twmap = Map(
-        identifier="twmap",
-        varname="twmap",
-        cls='',
-        style=(
-            "height:100%;"
-            "width:100%;"
-            "position:absolute;"
-            "z-index:200;"
-            "top:0;"
-            "left:0;"
-        ),
-        lat=46.44,
-        lng=30.75,
-        zoom = 15,
-        markers=markers,
-        fit_markers_to_bounds=True
-    )
-
-    return render_template(
-        'map.html',
-        twmap=twmap,
-    )
-
 
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True, host= '0.0.0.0', port=8080)
