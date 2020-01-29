@@ -99,11 +99,6 @@ img::-moz-selection {
   margin: 10px 10px 10px 10px;
 }
 
-.btn-s {
-  padding: 10px 10px;
-  margin: 6px 6px 6px 6px;
-}
-
 .btn-primary {
   background-color: #e66a37;
   border-color: #e66a37;
