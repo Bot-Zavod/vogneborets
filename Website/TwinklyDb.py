@@ -131,11 +131,11 @@ class Review:
         reviews = run_query(stmt)
         marks = {}
         for r in reviews:
-            if r[0] in marks:
-                marks[r[0]].mark.append(r[4])
-                marks[r[0]].comments.append(r[5])
+            if (r[0], r[3]) in marks:
+                marks[(r[0], r[3])].mark.append(r[4])
+                marks[(r[0], r[3])].comments.append(r[5])
             else:
-                marks[r[0]] = Mark(r[1], r[2], r[3], [r[4]], [r[5]])
+                marks[(r[0], r[3])] = Mark(r[1], r[2], r[3], [r[4]], [r[5]])
         for m in marks.keys():
             marks[m].mark = int(mean(marks[m].mark))
         #return [Review(*el[1:], review_id = el[0]) for el in run_query(stmt)]
