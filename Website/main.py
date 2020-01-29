@@ -34,7 +34,6 @@ def makePin(mrk):
 
 def updateReviews():
     reviews = Review.getMarkers().values()
-    print('\n'.join([str(r) for r in reviews]))
     return tuple(makePin(m) for m in reviews)
 
 @app.route("/", methods=["GET", "POST"])
