@@ -99,6 +99,11 @@ img::-moz-selection {
   margin: 10px 10px 10px 10px;
 }
 
+.btn-s {
+  padding: 10px 10px;
+  margin: 6px 6px 6px 6px;
+}
+
 .btn-primary {
   background-color: #e66a37;
   border-color: #e66a37;
@@ -705,4 +710,9 @@ ul.social-buttons li a:active, ul.social-buttons li a:focus, ul.social-buttons l
 
 .navbar-custom {
   background-color: #000000;
+}
+
+#verticalButton
+{
+     vertical-align: middle
 }
