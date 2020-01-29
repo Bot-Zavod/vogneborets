@@ -124,6 +124,10 @@ img::-moz-selection {
   height: 7vh;
 }
 
+#donate_button{
+  border: 0;
+}
+
 #mainNav .navbar-toggler {
 /*  font-size: 12px;
 */  padding: 20px;
@@ -184,13 +188,16 @@ img::-moz-selection {
   #logo-p{
     height: 1.5em;
   }
+  #donate_button{
+    size: 1.2em
 
+  }
 }
 
 header.masthead {
   text-align: center;
   color: white;
-  height: 100%;
+  height: 100vh;
   /*width: 100%;*/
   background-image: url("../img/header-bg.jpg");
   background-repeat: no-repeat;
